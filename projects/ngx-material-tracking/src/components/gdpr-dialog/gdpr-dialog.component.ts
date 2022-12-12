@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, Injector, Input, OnInit } from '@angular/core';
+import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { GdprCategory } from '../../models/gdpr-category.enum';
@@ -28,13 +28,6 @@ import { GdprService, NGX_GDPR_SERVICE } from '../../services/gdpr.service';
 })
 export class GdprDialogComponent<TrackingMetadata extends BaseTrackingMetadata> implements OnInit {
 
-    /**
-     * The data for the dialog.
-     * Mainly contains titles and labels.
-     */
-    @Input()
-    gdprDialogDataInput?: GdprDialogData;
-
     gdprDialogData!: GdprDialogDataInternal;
 
     technicalNecessaryTrackings!: Tracking<TrackingMetadata>[];
@@ -45,12 +38,14 @@ export class GdprDialogComponent<TrackingMetadata extends BaseTrackingMetadata> 
         @Inject(NGX_GDPR_SERVICE)
         readonly gdprService: GdprService<TrackingMetadata>,
         private readonly dialogRef: MatDialogRef<GdprDialogComponent<TrackingMetadata>>,
-        private readonly injector: Injector
+        private readonly injector: Injector,
+        @Inject(MAT_DIALOG_DATA)
+        private readonly dialogData?: GdprDialogData
     ) { }
 
     ngOnInit(): void {
         this.dialogRef.disableClose = true;
-        this.gdprDialogData = new GdprDialogDataInternal(this.gdprDialogDataInput);
+        this.gdprDialogData = new GdprDialogDataInternal(this.dialogData);
         this.technicalNecessaryTrackings = this.gdprService.trackings.filter(t => {
             // eslint-disable-next-line max-len
             const trackingCategory: GdprCategory = this.injector.get<BaseTrackingService<TrackingMetadata>>(t.TrackingServiceClass).GDPR_CATEGORY;
