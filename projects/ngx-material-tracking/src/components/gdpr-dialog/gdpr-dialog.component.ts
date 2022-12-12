@@ -78,6 +78,7 @@ export class GdprDialogComponent<TrackingMetadata extends BaseTrackingMetadata> 
      */
     allowAll(): void {
         this.gdprService.enableAllTrackings();
+        this.gdprService.hasMadeGdprChoices = true;
         this.close();
     }
 
@@ -86,6 +87,7 @@ export class GdprDialogComponent<TrackingMetadata extends BaseTrackingMetadata> 
      */
     disallowAll(): void {
         this.gdprService.disableAllTrackings();
+        this.gdprService.hasMadeGdprChoices = true;
         this.close();
     }
 
@@ -93,6 +95,7 @@ export class GdprDialogComponent<TrackingMetadata extends BaseTrackingMetadata> 
      * Saves the currently selected settings (Simply closes the dialog).
      */
     saveSettings(): void {
+        this.gdprService.hasMadeGdprChoices = true;
         this.close();
     }
 

@@ -53,7 +53,9 @@ const trackings: Tracking[] = [
         },
         {
             provide: APP_INITIALIZER,
-            useFactory: () => {},
+            useFactory: () => {
+                return () => {};
+            },
             deps: [GoogleAnalyticsService, InternalAnalyticsService],
             multi: true
         }

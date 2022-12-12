@@ -52,7 +52,9 @@ import { GoogleAnalyticsService, NGX_GDPR_TRACKINGS, NGX_GOOGLE_ANALYTICS_ID, Tr
 
 {
     provide: APP_INITIALIZER,
-    useFactory: () => {},
+    useFactory: () => {
+        return () => {};
+    },
     deps: [GoogleAnalyticsService, InternalAnalyticsService], // anything listed here gets initialized on startup
     multi: true // optional
 }

@@ -64,6 +64,13 @@ export class GdprService<TrackingMetadata extends BaseTrackingMetadata> {
         return false;
     }
 
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    set hasMadeGdprChoices(value: boolean) {
+        if (value) {
+            localStorage.setItem(this.HAS_MADE_GDPR_CHOICES_KEY, JSON.stringify(new Date()));
+        }
+    }
+
     constructor(
         private readonly injector: Injector,
         @Inject(NGX_GDPR_TRACKINGS)
