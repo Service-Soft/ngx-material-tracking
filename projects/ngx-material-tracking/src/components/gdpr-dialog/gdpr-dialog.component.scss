@@ -1,0 +1,72 @@
+mat-panel-title {
+    mat-slide-toggle {
+        margin-left: auto;
+    }
+}
+
+b {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.dialog-title {
+    display: flex;
+    border-bottom: 1px solid black;
+    margin-bottom: 10px;
+}
+
+.close-button {
+    margin-left: auto;
+}
+
+.close-button:hover {
+    cursor: pointer;
+    color: red;
+    transition: color 0.5s ease;
+}
+
+.dialog-actions {
+    border-top: 1px solid black;
+    margin-top: 10px;
+    padding-top: 16px;
+    min-width: 650px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+
+    .allow-all-button {
+        flex-basis: 50%;
+        color: white;
+        background-color: green;
+    }
+
+    .save-settings-button,
+    .disallow-all-button {
+        flex-basis: calc(25% - 15px);
+    }
+}
+
+@media(max-width: 900px) {
+    .dialog-actions {
+        min-width: 0px;
+
+        .allow-all-button {
+            flex-basis: 100%;
+        }
+
+        .save-settings-button,
+        .disallow-all-button {
+            flex-basis: calc(50% - 15px);
+        }
+    }
+}
+
+@media(max-width: 575px) {
+    .dialog-actions {
+        .allow-all-button,
+        .save-settings-button,
+        .disallow-all-button {
+            flex-basis: 100%;
+        }
+    }
+}

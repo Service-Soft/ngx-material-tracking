@@ -1,0 +1,50 @@
+<div class="dialog-title" mat-dialog-title>
+    <h1>{{gdprDialogData.title}}</h1>
+    <a (click)="allowAll()" class="close-button">{{gdprDialogData.allowAllButtonLabel}} 🗙</a>
+</div>
+<div mat-dialog-content>
+    <b>{{gdprDialogData.technicalNecessaryTitle}}</b>
+    <mat-accordion displayMode="flat">
+        <mat-expansion-panel *ngFor="let tracking of technicalNecessaryTrackings">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{tracking.name}}
+                    <mat-slide-toggle checked disabled></mat-slide-toggle>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            {{tracking.description}}
+        </mat-expansion-panel>
+    </mat-accordion>
+    <br>
+    <b>{{gdprDialogData.enabledByDefaultTitle}}</b>
+    <mat-accordion displayMode="flat">
+        <mat-expansion-panel *ngFor="let tracking of enabledByDefaultTrackings">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{tracking.name}}
+                    <mat-slide-toggle (click)="$event.stopPropagation()" (change)="toggleTracking(tracking)" [checked]="isTrackingEnabled(tracking)"></mat-slide-toggle>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            {{tracking.description}}
+        </mat-expansion-panel>
+    </mat-accordion>
+    <br>
+    <b>{{gdprDialogData.disabledByDefaultTitle}}</b>
+    <mat-accordion displayMode="flat">
+        <mat-expansion-panel *ngFor="let tracking of disabledByDefaultTrackings">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{tracking.name}}
+                    <mat-slide-toggle (click)="$event.stopPropagation()" (change)="toggleTracking(tracking)" [checked]="isTrackingEnabled(tracking)"></mat-slide-toggle>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            {{tracking.description}}
+        </mat-expansion-panel>
+    </mat-accordion>
+    <br>
+</div>
+<div class="dialog-actions" mat-dialog-actions>
+    <button class="allow-all-button" mat-raised-button (click)="allowAll()">{{gdprDialogData.allowAllButtonLabel}}</button>
+    <button class="save-settings-button" mat-raised-button (click)="saveSettings()">{{gdprDialogData.saveSettingsButtonLabel}}</button>
+    <button class="disallow-all-button" mat-button (click)="disallowAll()">{{gdprDialogData.disallowAllButtonLabel}}</button>
+</div>

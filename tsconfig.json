@@ -1,0 +1,46 @@
+{
+    "compileOnSave": false,
+    "ts-node": {
+        // these options are overrides used only by ts-node
+        "compilerOptions": {
+            "module": "commonjs"
+        }
+    },
+    "compilerOptions": {
+        "baseUrl": "./",
+        "outDir": "./dist/out-tsc",
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "noImplicitOverride": true,
+        "noPropertyAccessFromIndexSignature": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": false,
+        "sourceMap": true,
+        "paths": {
+            "ngx-material-tracking": [
+                "dist/ngx-material-tracking/ngx-material-tracking",
+                "dist/ngx-material-tracking"
+            ]
+        },
+        "declaration": false,
+        "downlevelIteration": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "module": "es2022",
+        "moduleResolution": "node",
+        "importHelpers": true,
+        "target": "es2022",
+        "lib": [
+            "es2020",
+            "dom"
+        ],
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+    },
+    "angularCompilerOptions": {
+        "enableI18nLegacyMessageIdFormat": false,
+        "strictInjectionParameters": true,
+        "strictInputAccessModifiers": true,
+        "strictTemplates": true
+    }
+}

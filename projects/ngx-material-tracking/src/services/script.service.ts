@@ -1,0 +1,87 @@
+import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
+import { NavigationStart, Router } from '@angular/router';
+
+/**
+ * Provides functionality around setting javascript dynamically.
+ */
+@Injectable({ providedIn: 'root' })
+export class ScriptService {
+
+    /**
+     * The name of the class that all temporary scripts have.
+     * Is needed to find the scripts when they should be removed again.
+     */
+    static readonly TEMPORARY_SCRIPT_CLASS_NAME = 'TEMPORARY_SCRIPT';
+
+    protected renderer: Renderer2;
+
+    constructor(
+        private readonly router: Router,
+        private readonly rendererFactory: RendererFactory2
+    ) {
+        this.renderer = this.rendererFactory.createRenderer(null, null);
+    }
+
+    /**
+     * Initializes the service.
+     * Listens to router events and remove all temporary scripts on navigation.
+     */
+    protected init(): void {
+        this.router.events.subscribe(e => {
+            if (e instanceof NavigationStart) {
+                this.removeAllTemporaryScripts();
+            }
+        });
+    }
+
+    /**
+     * Loads a js script with the given content and src globally.
+     *
+     * @param content - The content inside the script.
+     * @param src - The src of the script tag.
+     * @param location - Where the script should be added.
+     * @param id - A css id for the script. Can be used to remove the script at a certain point.
+     */
+    loadPermanentJsScript(content: string, src?: string, location: 'head' | 'body' = 'body', id: string = ''): void {
+        const script: HTMLScriptElement = this.renderer.createElement('script') as HTMLScriptElement;
+        script.type = 'text/javascript';
+        if (src) {
+            script.src = src;
+        }
+        script.innerHTML = content;
+        if (id) {
+            script.id = id;
+        }
+        this.renderer.appendChild(document[location], script);
+    }
+
+    /**
+     * Loads in a script with the given content.
+     *
+     * @param content - The content of the script.
+     * @param src - The src of the script tag.
+     */
+    loadTemporaryJsScript(content: string, src?: string): void {
+        const script: HTMLScriptElement = this.renderer.createElement('script') as HTMLScriptElement;
+        script.type = 'text/javascript';
+        script.className = ScriptService.TEMPORARY_SCRIPT_CLASS_NAME;
+        if (src) {
+            script.src = src;
+        }
+        script.innerHTML = content;
+        this.renderer.appendChild(document.body, script);
+    }
+
+    /**
+     * Removes all temporary script elements.
+     */
+    removeAllTemporaryScripts(): void {
+        // eslint-disable-next-line max-len
+        const temporaryScriptElements: HTMLCollectionOf<Element> = document.getElementsByClassName(ScriptService.TEMPORARY_SCRIPT_CLASS_NAME);
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
+        for (let i: number = 0; i < temporaryScriptElements.length; i++) {
+            const element: Element = temporaryScriptElements[i];
+            this.renderer.removeChild(document.body, element);
+        }
+    }
+}
