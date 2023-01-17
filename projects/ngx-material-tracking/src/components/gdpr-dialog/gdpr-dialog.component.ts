@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { GdprCategory } from '../../models/gdpr-category.enum';
@@ -23,6 +23,7 @@ import { GdprService, NGX_GDPR_SERVICE } from '../../services/gdpr.service';
         CommonModule,
         MatButtonModule,
         MatSlideToggleModule,
+        MatDialogModule,
         MatExpansionModule
     ]
 })

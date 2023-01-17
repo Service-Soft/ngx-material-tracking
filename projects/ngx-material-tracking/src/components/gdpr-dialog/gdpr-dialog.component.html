@@ -3,8 +3,8 @@
     <a (click)="allowAll()" class="close-button">{{gdprDialogData.allowAllButtonLabel}} 🗙</a>
 </div>
 <div mat-dialog-content>
-    <b>{{gdprDialogData.technicalNecessaryTitle}}</b>
-    <mat-accordion displayMode="flat">
+    <b *ngIf="technicalNecessaryTrackings.length">{{gdprDialogData.technicalNecessaryTitle}}</b>
+    <mat-accordion *ngIf="technicalNecessaryTrackings.length" displayMode="flat">
         <mat-expansion-panel *ngFor="let tracking of technicalNecessaryTrackings">
             <mat-expansion-panel-header>
                 <mat-panel-title>
@@ -15,9 +15,10 @@
             {{tracking.description}}
         </mat-expansion-panel>
     </mat-accordion>
-    <br>
-    <b>{{gdprDialogData.enabledByDefaultTitle}}</b>
-    <mat-accordion displayMode="flat">
+    <br *ngIf="technicalNecessaryTrackings.length">
+
+    <b *ngIf="enabledByDefaultTrackings.length">{{gdprDialogData.enabledByDefaultTitle}}</b>
+    <mat-accordion *ngIf="enabledByDefaultTrackings.length" displayMode="flat">
         <mat-expansion-panel *ngFor="let tracking of enabledByDefaultTrackings">
             <mat-expansion-panel-header>
                 <mat-panel-title>
@@ -28,9 +29,10 @@
             {{tracking.description}}
         </mat-expansion-panel>
     </mat-accordion>
-    <br>
-    <b>{{gdprDialogData.disabledByDefaultTitle}}</b>
-    <mat-accordion displayMode="flat">
+    <br *ngIf="enabledByDefaultTrackings.length">
+
+    <b *ngIf="disabledByDefaultTrackings.length">{{gdprDialogData.disabledByDefaultTitle}}</b>
+    <mat-accordion *ngIf="disabledByDefaultTrackings.length" displayMode="flat">
         <mat-expansion-panel *ngFor="let tracking of disabledByDefaultTrackings">
             <mat-expansion-panel-header>
                 <mat-panel-title>
@@ -41,7 +43,7 @@
             {{tracking.description}}
         </mat-expansion-panel>
     </mat-accordion>
-    <br>
+    <br *ngIf="disabledByDefaultTrackings.length">
 </div>
 <div class="dialog-actions" mat-dialog-actions>
     <button class="allow-all-button" mat-raised-button (click)="allowAll()">{{gdprDialogData.allowAllButtonLabel}}</button>

@@ -1,6 +1,8 @@
 mat-panel-title {
     mat-slide-toggle {
         margin-left: auto;
+        padding-top: 10px;
+        padding-bottom: 10px;
     }
 }
 
@@ -12,7 +14,11 @@ b {
 .dialog-title {
     display: flex;
     border-bottom: 1px solid black;
+    margin-top: 12px;
     margin-bottom: 10px;
+    h1 {
+        margin-bottom: 0px;
+    }
 }
 
 .close-button {
@@ -32,7 +38,6 @@ b {
     min-width: 650px;
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
 
     .allow-all-button {
         flex-basis: 50%;
