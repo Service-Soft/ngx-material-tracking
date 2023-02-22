@@ -16,6 +16,7 @@ b {
     border-bottom: 1px solid black;
     margin-top: 12px;
     margin-bottom: 10px;
+
     h1 {
         margin-bottom: 0px;
     }
@@ -47,7 +48,8 @@ b {
 
     .save-settings-button,
     .disallow-all-button {
-        flex-basis: calc(25% - 15px);
+        flex-basis: calc(25% - 8px);
+        margin-left: 8px;
     }
 }
 
@@ -57,17 +59,31 @@ b {
 
         .allow-all-button {
             flex-basis: 100%;
+            margin-bottom: 8px;
         }
 
-        .save-settings-button,
+        .save-settings-button {
+            margin-left: 0px;
+            flex-basis: 50%;
+        }
+
         .disallow-all-button {
-            flex-basis: calc(50% - 15px);
+            flex-basis: calc(50% - 8px);
         }
     }
 }
 
 @media(max-width: 575px) {
     .dialog-actions {
+
+        .save-settings-button {
+            margin-bottom: 8px;
+        }
+
+        .disallow-all-button {
+            margin-left: 0px;
+        }
+
         .allow-all-button,
         .save-settings-button,
         .disallow-all-button {
