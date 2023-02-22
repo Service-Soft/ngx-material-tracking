@@ -17,7 +17,7 @@ export class GdprDialogDataInternal implements GdprDialogData {
     constructor(data?: GdprDialogData) {
         this.title = data?.title ?? 'Tracking';
         this.allowAllButtonLabel = data?.allowAllButtonLabel ?? 'Allow all';
-        this.disallowAllButtonLabel = data?.disallowAllButtonLabel ?? 'Disallow not required';
+        this.disallowAllButtonLabel = data?.disallowAllButtonLabel ?? 'Only required';
         this.saveSettingsButtonLabel = data?.saveSettingsButtonLabel ?? 'Save';
         this.technicalNecessaryTitle = data?.technicalNecessaryTitle ?? 'Technical necessary';
         this.enabledByDefaultTitle = data?.enabledByDefaultTitle ?? 'Analytics';

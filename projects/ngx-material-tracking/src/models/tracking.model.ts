@@ -37,11 +37,11 @@ export interface Tracking<
      */
     name: string,
     /**
-     * The description of the tracking service.
+     * The description of the tracking service as paragraphs.
      * Should contain information about what is tracked an who receives the data.
      * Gets displayed in the gdpr-dialog.
      */
-    description: string,
+    description: string[],
     /**
      * The service that is handling the tracking.
      */

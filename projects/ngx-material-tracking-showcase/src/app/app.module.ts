@@ -20,12 +20,12 @@ const trackings: Tracking[] = [
     // },
     {
         name: 'Internal Analytics',
-        description: 'This is used to track your navigation over the website.',
+        description: ['This is used to track your navigation over the website.'],
         TrackingServiceClass: InternalAnalyticsService
     },
     {
         name: 'Google',
-        description: 'This is a third party tracking service.',
+        description: ['This is a third party tracking service.'],
         TrackingServiceClass: GoogleAnalyticsService
     }
 ];

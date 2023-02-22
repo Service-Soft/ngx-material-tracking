@@ -12,7 +12,9 @@
                     <mat-slide-toggle checked disabled></mat-slide-toggle>
                 </mat-panel-title>
             </mat-expansion-panel-header>
-            {{tracking.description}}
+            <div *ngFor="let paragraph of tracking.description">
+                {{paragraph}}
+            </div>
         </mat-expansion-panel>
     </mat-accordion>
     <br *ngIf="technicalNecessaryTrackings.length">
@@ -26,7 +28,9 @@
                     <mat-slide-toggle (click)="$event.stopPropagation()" (change)="toggleTracking(tracking)" [checked]="isTrackingEnabled(tracking)"></mat-slide-toggle>
                 </mat-panel-title>
             </mat-expansion-panel-header>
-            {{tracking.description}}
+            <div *ngFor="let paragraph of tracking.description">
+                {{paragraph}}
+            </div>
         </mat-expansion-panel>
     </mat-accordion>
     <br *ngIf="enabledByDefaultTrackings.length">
@@ -40,7 +44,9 @@
                     <mat-slide-toggle (click)="$event.stopPropagation()" (change)="toggleTracking(tracking)" [checked]="isTrackingEnabled(tracking)"></mat-slide-toggle>
                 </mat-panel-title>
             </mat-expansion-panel-header>
-            {{tracking.description}}
+            <div *ngFor="let paragraph of tracking.description">
+                {{paragraph}}
+            </div>
         </mat-expansion-panel>
     </mat-accordion>
     <br *ngIf="disabledByDefaultTrackings.length">
