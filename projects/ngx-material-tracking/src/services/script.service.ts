@@ -52,6 +52,7 @@ export class ScriptService {
         if (id) {
             script.id = id;
         }
+        script.async = true;
         this.renderer.appendChild(document[location], script);
     }
 
@@ -69,6 +70,7 @@ export class ScriptService {
             script.src = src;
         }
         script.innerHTML = content;
+        script.async = true;
         this.renderer.appendChild(document.body, script);
     }
 
