@@ -1,7 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { CanActivate } from '@angular/router';
-import { GdprDialogComponent } from '../components/gdpr-dialog/gdpr-dialog.component';
 import { BaseTrackingMetadata } from './base-tracking.service';
 import { GdprService, NGX_GDPR_SERVICE } from './gdpr.service';
 
@@ -12,14 +10,13 @@ import { GdprService, NGX_GDPR_SERVICE } from './gdpr.service';
 export class GdprGuard implements CanActivate {
     constructor(
         @Inject(NGX_GDPR_SERVICE)
-        private readonly gdprService: GdprService<BaseTrackingMetadata>,
-        private readonly dialog: MatDialog
+        private readonly gdprService: GdprService<BaseTrackingMetadata>
     ) { }
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     canActivate(): boolean {
         if (!this.gdprService.hasMadeGdprChoices) {
-            this.dialog.open(GdprDialogComponent);
+            void this.gdprService.openDialog();
         }
         return true;
     }

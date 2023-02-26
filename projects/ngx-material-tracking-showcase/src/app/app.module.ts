@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { GoogleAnalyticsService, NGX_GDPR_TRACKINGS, NGX_GOOGLE_ANALYTICS_ID, Tracking } from 'ngx-material-tracking';
+import { GdprDialogData, GoogleAnalyticsService, NGX_GDPR_TRACKINGS, NGX_GOOGLE_ANALYTICS_ID, Tracking, NGX_GDPR_DIALOG_DATA } from 'ngx-material-tracking';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { InternalAnalyticsService } from './services/internal-analytics.service';
@@ -30,6 +30,16 @@ const trackings: Tracking[] = [
     }
 ];
 
+const gdprDialogData: GdprDialogData = {
+    title: 'Custom title',
+    allowAllButtonLabel: 'Custom allow all',
+    disallowAllButtonLabel: 'Custom disallow all',
+    saveSettingsButtonLabel: 'Custom save',
+    technicalNecessaryTitle: 'Custom necessary',
+    enabledByDefaultTitle: 'Custom functional',
+    disabledByDefaultTitle: 'Custom tracking'
+};
+
 @NgModule({
     declarations: [
         AppComponent
@@ -50,6 +60,10 @@ const trackings: Tracking[] = [
         {
             provide: NGX_GOOGLE_ANALYTICS_ID,
             useValue: 'test123'
+        },
+        {
+            provide: NGX_GDPR_DIALOG_DATA,
+            useValue: gdprDialogData
         },
         {
             provide: APP_INITIALIZER,

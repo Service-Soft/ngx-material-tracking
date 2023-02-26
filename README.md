@@ -87,6 +87,19 @@ const trackings: Tracking[] = [
     provide: NGX_GDPR_TRACKINGS,
     useValue: trackings
 },
+// (Optional)
+{
+    provide: NGX_GDPR_DIALOG_DATA,
+    useValue: {
+        title: 'Custom title',
+        allowAllButtonLabel: 'Custom allow all',
+        disallowAllButtonLabel: 'Custom disallow all',
+        saveSettingsButtonLabel: 'Custom save',
+        technicalNecessaryTitle: 'Custom necessary',
+        enabledByDefaultTitle: 'Custom functional',
+        disabledByDefaultTitle: 'Custom tracking'
+    }
+},
 ```
 
 ## Use the builtin route guard or open the dialog manually
