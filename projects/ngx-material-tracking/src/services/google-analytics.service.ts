@@ -41,7 +41,7 @@ export class GoogleAnalyticsService extends BaseTrackingService<BaseTrackingMeta
     readonly ANONYMIZE_IP: boolean;
 
     constructor(router: Router) {
-        super(router);
+        super(router, { enabled: false });
         this.ANALYTICS_ID = inject(NGX_GOOGLE_ANALYTICS_ID);
         this.ANONYMIZE_IP = inject(NGX_GOOGLE_ANALYTICS_ANONYMIZE_IP);
         this.loadScripts();

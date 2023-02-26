@@ -72,8 +72,8 @@ export abstract class BaseTrackingService<TrackingMetadata extends BaseTrackingM
         }
     }
 
-    constructor(private readonly router: Router, metadataDefaultValue?: Omit<TrackingMetadata, 'createdAt'>) {
-        this.metadataDefaultValue = metadataDefaultValue ?? this.getDefaultMetadataValue();
+    constructor(private readonly router: Router, metadataDefaultValue: Omit<TrackingMetadata, 'createdAt'>) {
+        this.metadataDefaultValue = metadataDefaultValue;
         this.initNavigationTracking();
     }
 
@@ -114,18 +114,6 @@ export abstract class BaseTrackingService<TrackingMetadata extends BaseTrackingM
      * It can be used to track visits over the website etc.
      */
     abstract onNavigationEnd(event: NavigationEnd): void;
-
-    /**
-     * Gets the default metadata when nothing has been saved.
-     *
-     * @returns The default metadata.
-     */
-    protected getDefaultMetadataValue(): Omit<TrackingMetadata, 'createdAt'> {
-        if (this.GDPR_CATEGORY === GdprCategory.DISABLED_BY_DEFAULT) {
-            return { enabled: false } as TrackingMetadata;
-        }
-        return { enabled: true } as TrackingMetadata;
-    }
 
     /**
      * Gets the metadata from a cookie.

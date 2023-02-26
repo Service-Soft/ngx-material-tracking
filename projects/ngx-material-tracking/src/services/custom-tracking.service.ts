@@ -69,8 +69,12 @@ export abstract class CustomTrackingService<
         return false;
     }
 
-    constructor(router: Router, private readonly http: HttpClient, metadataDefaultValue?: Omit<TrackingMetadata, 'createdAt'>) {
-        super(router, metadataDefaultValue);
+    constructor(
+        router: Router,
+        private readonly http: HttpClient,
+        metadataDefaultValue: Omit<TrackingMetadata, 'createdAt' | 'firstVisit'>
+    ) {
+        super(router, metadataDefaultValue as Omit<TrackingMetadata, 'createdAt'>);
     }
 
     // eslint-disable-next-line jsdoc/require-jsdoc

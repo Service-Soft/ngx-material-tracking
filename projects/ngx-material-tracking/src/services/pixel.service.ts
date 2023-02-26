@@ -33,7 +33,7 @@ export class PixelService extends BaseTrackingService<BaseTrackingMetadata> {
     readonly PIXEL_SCRIPT_ID: string = 'pixel-script';
 
     constructor(router: Router) {
-        super(router);
+        super(router, { enabled: false });
         this.PIXEL_ID = inject(NGX_PIXEL_ID);
     }
 

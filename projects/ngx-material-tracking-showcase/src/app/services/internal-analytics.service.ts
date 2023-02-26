@@ -13,6 +13,6 @@ export class InternalAnalyticsService extends CustomTrackingService<BaseCustomTr
     readonly GDPR_CATEGORY: GdprCategory = GdprCategory.ENABLED_BY_DEFAULT;
 
     constructor(router: Router, http: HttpClient) {
-        super(router, http);
+        super(router, http, { enabled: true });
     }
 }
