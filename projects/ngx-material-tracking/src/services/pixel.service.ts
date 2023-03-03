@@ -1,4 +1,5 @@
-import { inject, Injectable, InjectionToken } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Inject, inject, Injectable, InjectionToken } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { PixelEventName, PixelEventProperties } from '../models/facebook-pixel.model';
 import { GdprCategory } from '../models/gdpr-category.enum';
@@ -32,7 +33,11 @@ export class PixelService extends BaseTrackingService<BaseTrackingMetadata> {
     readonly PIXEL_ID: string;
     readonly PIXEL_SCRIPT_ID: string = 'pixel-script';
 
-    constructor(router: Router) {
+    constructor(
+        router: Router,
+        @Inject(DOCUMENT)
+        private readonly document: Document
+    ) {
         super(router, { enabled: false });
         this.PIXEL_ID = inject(NGX_PIXEL_ID);
     }
@@ -48,9 +53,6 @@ export class PixelService extends BaseTrackingService<BaseTrackingMetadata> {
      */
     protected loadPixelScript(): void {
         const scriptService: ScriptService = inject(ScriptService);
-        if (document.getElementById(this.PIXEL_SCRIPT_ID)) {
-            return;
-        }
         scriptService.loadPermanentJsScript(
             `
                 var pixelCode = function(f,b,e,v,n,t,s)
@@ -73,7 +75,7 @@ export class PixelService extends BaseTrackingService<BaseTrackingMetadata> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     override disable(): void {
         super.disable();
-        document.getElementById(this.PIXEL_SCRIPT_ID)?.remove();
+        this.document.getElementById(this.PIXEL_SCRIPT_ID)?.remove();
     }
 
     // eslint-disable-next-line jsdoc/require-jsdoc, @typescript-eslint/no-unused-vars

@@ -39,7 +39,7 @@ export abstract class CookieUtilities {
     static get(name: string): string | null {
         name = encodeURIComponent(name);
         const regExp: RegExp = CookieUtilities.getCookieRegExp(name);
-        const result: RegExpExecArray | null = regExp.exec(document.cookie);
+        const result: RegExpExecArray | null = regExp.exec(document?.cookie ?? '');
         return result?.[1] ? CookieUtilities.safeDecodeURIComponent(result[1]) : null;
     }
 
@@ -72,6 +72,9 @@ export abstract class CookieUtilities {
      * @param options - Any additional options for the cookie.
      */
     static set(name: string, value: string, options: CookieOptions = {}): void {
+        if (document == null) {
+            return;
+        }
         let cookieString: string = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';';
         // eslint-disable-next-line max-len
         cookieString += options.expireDays ? `expires=${new Date(new Date().getTime() + options.expireDays * 1000 * 60 * 60 * 24).toUTCString()};` : '';
@@ -113,6 +116,9 @@ export abstract class CookieUtilities {
      * @returns All the cookies in json.
      */
     private static getAll(): Record<string, string> {
+        if (document == null) {
+            return {};
+        }
         const cookies: Record<string, string> = {};
         if (document.cookie && document.cookie !== '') {
             document.cookie.split(';').forEach(c => {

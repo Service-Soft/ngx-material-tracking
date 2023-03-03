@@ -1,4 +1,5 @@
-import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Inject, Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 
 /**
@@ -11,15 +12,18 @@ export class ScriptService {
      * The name of the class that all temporary scripts have.
      * Is needed to find the scripts when they should be removed again.
      */
-    static readonly TEMPORARY_SCRIPT_CLASS_NAME = 'TEMPORARY_SCRIPT';
+    static readonly TEMPORARY_SCRIPT_CLASS_NAME = 'temporary-script';
 
     protected renderer: Renderer2;
 
     constructor(
         private readonly router: Router,
-        private readonly rendererFactory: RendererFactory2
+        private readonly rendererFactory: RendererFactory2,
+        @Inject(DOCUMENT)
+        private readonly document: Document
     ) {
         this.renderer = this.rendererFactory.createRenderer(null, null);
+        this.init();
     }
 
     /**
@@ -42,7 +46,10 @@ export class ScriptService {
      * @param location - Where the script should be added.
      * @param id - A css id for the script. Can be used to remove the script at a certain point.
      */
-    loadPermanentJsScript(content: string, src?: string, location: 'head' | 'body' = 'body', id: string = ''): void {
+    loadPermanentJsScript(content: string, src?: string, location: 'head' | 'body' = 'body', id?: string): void {
+        if (id && this.document.getElementById(id)) {
+            return;
+        }
         const script: HTMLScriptElement = this.renderer.createElement('script') as HTMLScriptElement;
         script.type = 'text/javascript';
         if (src) {
@@ -71,7 +78,7 @@ export class ScriptService {
         }
         script.innerHTML = content;
         script.async = true;
-        this.renderer.appendChild(document.body, script);
+        this.renderer.appendChild(this.document.body, script);
     }
 
     /**
@@ -79,11 +86,11 @@ export class ScriptService {
      */
     removeAllTemporaryScripts(): void {
         // eslint-disable-next-line max-len
-        const temporaryScriptElements: HTMLCollectionOf<Element> = document.getElementsByClassName(ScriptService.TEMPORARY_SCRIPT_CLASS_NAME);
+        const temporaryScriptElements: HTMLCollectionOf<Element> = this.document.getElementsByClassName(ScriptService.TEMPORARY_SCRIPT_CLASS_NAME);
         // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i: number = 0; i < temporaryScriptElements.length; i++) {
             const element: Element = temporaryScriptElements[i];
-            this.renderer.removeChild(document.body, element);
+            this.renderer.removeChild(this.document.body, element);
         }
     }
 }

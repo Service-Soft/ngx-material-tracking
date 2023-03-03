@@ -1,5 +1,6 @@
+import { DOCUMENT } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BaseCustomTrackingMetadata, CustomTrackingService, GdprCategory, TrackingEvent, TrackingVisit } from 'ngx-material-tracking';
 
@@ -13,6 +14,6 @@ export class InternalAnalyticsService extends CustomTrackingService<BaseCustomTr
     readonly GDPR_CATEGORY: GdprCategory = GdprCategory.ENABLED_BY_DEFAULT;
 
     constructor(router: Router, http: HttpClient) {
-        super(router, http, { enabled: true });
+        super(router, http, { enabled: true }, inject(DOCUMENT));
     }
 }

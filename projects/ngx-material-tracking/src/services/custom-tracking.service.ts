@@ -1,4 +1,6 @@
+import { DOCUMENT } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { Inject } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { TrackingEvent } from '../models/event.model';
@@ -72,7 +74,9 @@ export abstract class CustomTrackingService<
     constructor(
         router: Router,
         private readonly http: HttpClient,
-        metadataDefaultValue: Omit<TrackingMetadata, 'createdAt' | 'firstVisit'>
+        metadataDefaultValue: Omit<TrackingMetadata, 'createdAt' | 'firstVisit'>,
+        @Inject(DOCUMENT)
+        private readonly document: Document
     ) {
         super(router, metadataDefaultValue as Omit<TrackingMetadata, 'createdAt'>);
     }
@@ -110,7 +114,7 @@ export abstract class CustomTrackingService<
     // eslint-disable-next-line jsdoc/require-jsdoc
     override onNavigationEnd(event: NavigationEnd): void {
         const visit: Omit<TrackingVisit, 'domain' | 'firstVisit'> = {
-            referrer: this.formatUrl(document.referrer),
+            referrer: this.formatUrl(this.document.referrer),
             targetSite: this.formatUrl(event.urlAfterRedirects)
         };
         this.trackVisit(visit as Omit<TrackingVisitType, 'domain' | 'firstVisit'>);
