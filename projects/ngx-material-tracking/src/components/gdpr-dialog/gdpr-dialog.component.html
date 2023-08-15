@@ -26,6 +26,7 @@
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     {{tracking.name}}
+                    <!-- eslint-disable-next-line @angular-eslint/template/no-call-expression -->
                     <mat-slide-toggle (click)="$event.stopPropagation()" (change)="toggleTracking(tracking)" [checked]="isTrackingEnabled(tracking)"></mat-slide-toggle>
                 </mat-panel-title>
             </mat-expansion-panel-header>
@@ -42,6 +43,7 @@
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     {{tracking.name}}
+                    <!-- eslint-disable-next-line @angular-eslint/template/no-call-expression -->
                     <mat-slide-toggle (click)="$event.stopPropagation()" (change)="toggleTracking(tracking)" [checked]="isTrackingEnabled(tracking)"></mat-slide-toggle>
                 </mat-panel-title>
             </mat-expansion-panel-header>
@@ -53,7 +55,7 @@
     <br *ngIf="disabledByDefaultTrackings.length">
 </div>
 <div class="dialog-actions" mat-dialog-actions>
-    <button class="allow-all-button" mat-raised-button (click)="allowAll()">{{gdprDialogData.allowAllButtonLabel}}</button>
-    <button class="save-settings-button" mat-raised-button (click)="saveSettings()">{{gdprDialogData.saveSettingsButtonLabel}}</button>
-    <button class="disallow-all-button" mat-button (click)="disallowAll()">{{gdprDialogData.disallowAllButtonLabel}}</button>
+    <button type="button" class="allow-all-button" mat-raised-button (click)="allowAll()">{{gdprDialogData.allowAllButtonLabel}}</button>
+    <button type="button" class="save-settings-button" mat-raised-button (click)="saveSettings()">{{gdprDialogData.saveSettingsButtonLabel}}</button>
+    <button type="button" class="disallow-all-button" mat-button (click)="disallowAll()">{{gdprDialogData.disallowAllButtonLabel}}</button>
 </div>

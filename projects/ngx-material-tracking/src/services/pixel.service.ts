@@ -1,5 +1,5 @@
-import { DOCUMENT } from '@angular/common';
-import { Inject, inject, Injectable, InjectionToken } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { inject, Injectable, InjectionToken, PLATFORM_ID } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { PixelEventName, PixelEventProperties } from '../models/facebook-pixel.model';
 import { GdprCategory } from '../models/gdpr-category.enum';
@@ -32,14 +32,12 @@ export class PixelService extends BaseTrackingService<BaseTrackingMetadata> {
     readonly GDPR_CATEGORY: GdprCategory = GdprCategory.DISABLED_BY_DEFAULT;
     readonly PIXEL_ID: string;
     readonly PIXEL_SCRIPT_ID: string = 'pixel-script';
+    private readonly platformId: Object;
 
-    constructor(
-        router: Router,
-        @Inject(DOCUMENT)
-        private readonly document: Document
-    ) {
+    constructor(router: Router) {
         super(router, { enabled: false });
         this.PIXEL_ID = inject(NGX_PIXEL_ID);
+        this.platformId = inject(PLATFORM_ID);
     }
 
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -74,8 +72,11 @@ export class PixelService extends BaseTrackingService<BaseTrackingMetadata> {
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     override disable(): void {
+        if (!isPlatformBrowser(this.platformId)) {
+            return;
+        }
         super.disable();
-        this.document.getElementById(this.PIXEL_SCRIPT_ID)?.remove();
+        document.getElementById(this.PIXEL_SCRIPT_ID)?.remove();
     }
 
     // eslint-disable-next-line jsdoc/require-jsdoc, @typescript-eslint/no-unused-vars

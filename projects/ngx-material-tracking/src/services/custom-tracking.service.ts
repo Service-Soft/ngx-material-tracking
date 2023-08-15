@@ -1,6 +1,6 @@
-import { DOCUMENT } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Inject } from '@angular/core';
+import { inject, PLATFORM_ID } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { TrackingEvent } from '../models/event.model';
@@ -53,6 +53,8 @@ export abstract class CustomTrackingService<
      */
     readonly FIRST_VISIT_DURATION_IN_MS: number = 2629746000;
 
+    private readonly platformId: Object;
+
     // eslint-disable-next-line jsdoc/require-returns
     /**
      * Whether or not the visitor has already been on this website.
@@ -74,11 +76,10 @@ export abstract class CustomTrackingService<
     constructor(
         router: Router,
         private readonly http: HttpClient,
-        metadataDefaultValue: Omit<TrackingMetadata, 'createdAt' | 'firstVisit'>,
-        @Inject(DOCUMENT)
-        private readonly document: Document
+        metadataDefaultValue: Omit<TrackingMetadata, 'createdAt' | 'firstVisit'>
     ) {
         super(router, metadataDefaultValue as Omit<TrackingMetadata, 'createdAt'>);
+        this.platformId = inject(PLATFORM_ID);
     }
 
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -113,8 +114,11 @@ export abstract class CustomTrackingService<
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     override onNavigationEnd(event: NavigationEnd): void {
+        if (!isPlatformBrowser(this.platformId)) {
+            return;
+        }
         const visit: Omit<TrackingVisit, 'domain' | 'firstVisit'> = {
-            referrer: this.formatUrl(this.document.referrer),
+            referrer: this.formatUrl(document.referrer),
             targetSite: this.formatUrl(event.urlAfterRedirects)
         };
         this.trackVisit(visit as Omit<TrackingVisitType, 'domain' | 'firstVisit'>);

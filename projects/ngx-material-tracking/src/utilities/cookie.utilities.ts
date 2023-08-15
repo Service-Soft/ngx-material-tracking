@@ -120,8 +120,8 @@ export abstract class CookieUtilities {
             return {};
         }
         const cookies: Record<string, string> = {};
-        if (document.cookie && document.cookie !== '') {
-            document.cookie.split(';').forEach(c => {
+        if (document?.cookie && document?.cookie !== '') {
+            document?.cookie.split(';').forEach(c => {
                 const [cName, cValue] = c.split('=');
                 cookies[CookieUtilities.safeDecodeURIComponent(cName.replace(/^ /, ''))] = CookieUtilities.safeDecodeURIComponent(cValue);
             });

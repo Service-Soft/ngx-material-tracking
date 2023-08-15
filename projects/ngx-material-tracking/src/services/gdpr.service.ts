@@ -28,7 +28,7 @@ export const NGX_GDPR_TRACKINGS: InjectionToken<Tracking<any>[]> = new Injection
     }) as () => Tracking<any>[]
 });
 
-// eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const NGX_GDPR_SERVICE: InjectionToken<GdprService<any>> = new InjectionToken<GdprService<any>>(
     'Provider for the trackings used in the gdpr-service.',
     {
