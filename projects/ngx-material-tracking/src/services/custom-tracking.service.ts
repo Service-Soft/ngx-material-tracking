@@ -87,7 +87,7 @@ export abstract class CustomTrackingService<
         const res: TrackingMetadata = super.getMetadataFromCookie();
         const firstVisitInMs: number = new Date(res.firstVisit).getTime();
         if ((Date.now() - firstVisitInMs) > this.FIRST_VISIT_DURATION_IN_MS) {
-            this.metadata = { ...this.metadata, firstVisit: new Date() };
+            this.metadata = { ...res, firstVisit: new Date() };
         }
         return JSON.parse(cookieStorage.getItem(this.METADATA_KEY) as string) as TrackingMetadata;
     }
@@ -97,7 +97,7 @@ export abstract class CustomTrackingService<
         const res: TrackingMetadata = super.getMetadataFromLocalStorage();
         const firstVisitInMs: number = new Date(res.firstVisit).getTime();
         if ((Date.now() - firstVisitInMs) > this.FIRST_VISIT_DURATION_IN_MS) {
-            this.metadata = { ...this.metadata, firstVisit: new Date() };
+            this.metadata = { ...res, firstVisit: new Date() };
         }
         return JSON.parse(localStorage.getItem(this.METADATA_KEY) as string) as TrackingMetadata;
     }
@@ -107,7 +107,7 @@ export abstract class CustomTrackingService<
         const res: TrackingMetadata = super.getMetadataFromSessionStorage();
         const firstVisitInMs: number = new Date(res.firstVisit).getTime();
         if ((Date.now() - firstVisitInMs) > this.FIRST_VISIT_DURATION_IN_MS) {
-            this.metadata = { ...this.metadata, firstVisit: new Date() };
+            this.metadata = { ...res, firstVisit: new Date() };
         }
         return JSON.parse(sessionStorage.getItem(this.METADATA_KEY) as string) as TrackingMetadata;
     }
@@ -126,6 +126,7 @@ export abstract class CustomTrackingService<
 
     /**
      * Formats the given url.
+     * By default this removes http:, https:, www., // and everything after ? Or #.
      *
      * @param url - The url to format.
      * @returns The formatted url.
