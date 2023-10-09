@@ -37,6 +37,9 @@ export abstract class CookieUtilities {
      * @returns The value of the cookie.
      */
     static get(name: string): string | null {
+        if (document == null) {
+            return null;
+        }
         name = encodeURIComponent(name);
         const regExp: RegExp = CookieUtilities.getCookieRegExp(name);
         const result: RegExpExecArray | null = regExp.exec(document?.cookie ?? '');
