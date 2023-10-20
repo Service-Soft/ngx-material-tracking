@@ -1,9 +1,10 @@
 /* eslint-disable jsdoc/require-jsdoc */
-/* eslint-disable @angular-eslint/component-selector */
 import { Component } from '@angular/core';
-import { BaseTrackingMetadata, GdprService } from 'ngx-material-tracking';
+import { BaseTrackingMetadata, GdprService, cookieStorage } from 'ngx-material-tracking';
 
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
+    // eslint-disable-next-line angular/component-selector
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
@@ -16,5 +17,11 @@ export class AppComponent {
 
     openGdpr(): void {
         void this.gdprService.openDialog();
+    }
+
+    clearLocalData(): void {
+        localStorage.clear();
+        sessionStorage.clear();
+        cookieStorage.clear();
     }
 }

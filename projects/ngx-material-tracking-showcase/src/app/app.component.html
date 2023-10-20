@@ -1,1 +1,9 @@
-<button type="button" mat-raised-button (click)="openGdpr()">Open GDPR</button>
+<div style="padding: 25px;">
+    <a mat-raised-button routerLink="">Home</a>
+    <a mat-raised-button routerLink="page-1" style="margin-left: 10px;">Page #1</a>
+    <button style="margin-left: 10px;" mat-raised-button type="button" (click)="openGdpr()">Open GDPR</button>
+    <button style="margin-left: 10px;" mat-raised-button type="button" (click)="clearLocalData()">Clear Local Data</button>
+    <br>
+    <br>
+    <router-outlet></router-outlet>
+</div>

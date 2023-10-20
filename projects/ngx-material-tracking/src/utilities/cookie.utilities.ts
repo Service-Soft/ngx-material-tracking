@@ -32,7 +32,6 @@ export abstract class CookieUtilities {
 
     /**
      * Get cookie by name.
-     *
      * @param name - The name of the cookie to get.
      * @returns The value of the cookie.
      */
@@ -53,7 +52,6 @@ export abstract class CookieUtilities {
 
     /**
      * Gets the unencoded version of an encoded component of a Uniform Resource Identifier (URI).
-     *
      * @param encodedURIComponent - A value representing an encoded URI component.
      * @returns The unencoded version of an encoded component of a Uniform Resource Identifier (URI).
      */
@@ -69,7 +67,6 @@ export abstract class CookieUtilities {
 
     /**
      * Sets a cookie with the given name, value and options.
-     *
      * @param name - The name of the cookie. Needs to be unique.
      * @param value - The value of the cookie.
      * @param options - Any additional options for the cookie.
@@ -91,7 +88,6 @@ export abstract class CookieUtilities {
 
     /**
      * Delete the cookie with the given name.
-     *
      * @param name - The name of the cookie.
      * @param options - The options of the cookie.
      */
@@ -101,7 +97,6 @@ export abstract class CookieUtilities {
 
     /**
      * Deletes all cookies.
-     *
      * @param options - The options of the cookies to delete.
      */
     static deleteAll(options?: Omit<CookieOptions, 'expireDays'>): void {
@@ -115,7 +110,6 @@ export abstract class CookieUtilities {
 
     /**
      * Get all cookies in JSON format.
-     *
      * @returns All the cookies in json.
      */
     private static getAll(): Record<string, string> {

@@ -1,6 +1,6 @@
 import { NavigationEnd, Router } from '@angular/router';
-import { GdprCategory } from '../models/gdpr-category.enum';
-import { cookieStorage } from '../utilities/cookie-storage.utilities';
+import { GdprCategory } from '../../models/gdpr-category.enum';
+import { cookieStorage } from '../../utilities/cookie-storage.utilities';
 
 /**
  * The base information for any tracking data.
@@ -118,7 +118,6 @@ export abstract class BaseTrackingService<TrackingMetadata extends BaseTrackingM
     /**
      * Gets the metadata from a cookie.
      * If no metadata could be found this sets default values.
-     *
      * @returns The currently saved tracking metadata.
      */
     protected getMetadataFromCookie(): TrackingMetadata {
@@ -131,7 +130,6 @@ export abstract class BaseTrackingService<TrackingMetadata extends BaseTrackingM
     /**
      * Gets the metadata from sessionStorage.
      * If no metadata could be found this sets default values.
-     *
      * @returns The currently saved tracking metadata.
      */
     protected getMetadataFromSessionStorage(): TrackingMetadata {
@@ -144,7 +142,6 @@ export abstract class BaseTrackingService<TrackingMetadata extends BaseTrackingM
     /**
      * Gets the metadata from localStorage.
      * If no metadata could be found this sets default values.
-     *
      * @returns The currently saved tracking metadata.
      */
     protected getMetadataFromLocalStorage(): TrackingMetadata {

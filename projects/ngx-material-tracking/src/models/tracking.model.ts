@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BaseTrackingMetadata, BaseTrackingService } from '../services/base-tracking.service';
-import { BaseCustomTrackingMetadata, CustomTrackingService } from '../services/custom-tracking.service';
+import { BaseTrackingMetadata, BaseTrackingService } from '../services/tracking/base-tracking.service';
+import { BaseCustomTrackingMetadata, CustomTrackingService } from '../services/tracking/custom-tracking.service';
 import { TrackingEvent } from './event.model';
 import { TrackingVisit } from './visit.model';
 

@@ -1,12 +1,12 @@
 /* eslint-disable jsdoc/require-jsdoc */
 // This file is required by karma.conf.js and loads recursively all the .spec and framework files
 
-import 'zone.js/testing';
 import { getTestBed } from '@angular/core/testing';
 import {
     BrowserDynamicTestingModule,
     platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
+import 'zone.js/testing';
 
 declare const require: {
     context: (path: string, deep?: boolean, filter?: RegExp) => {
@@ -22,7 +22,7 @@ getTestBed().initTestEnvironment(
 );
 
 // Then we find all the tests.
-// eslint-disable-next-line @typescript-eslint/typedef
+// eslint-disable-next-line typescript/typedef
 const context = require.context('./', true, /\.spec\.ts$/);
 // And load the modules.
 context.keys().forEach(context);

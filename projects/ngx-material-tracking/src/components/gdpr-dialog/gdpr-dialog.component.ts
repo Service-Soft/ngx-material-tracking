@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { GdprCategory } from '../../models/gdpr-category.enum';
 import { GdprDialogDataInternal } from '../../models/gdpr-dialog-data-internal.model';
 import { GdprDialogData } from '../../models/gdpr-dialog-data.model';
 import { Tracking } from '../../models/tracking.model';
-import { BaseTrackingMetadata, BaseTrackingService } from '../../services/base-tracking.service';
 import { GdprService, NGX_GDPR_SERVICE } from '../../services/gdpr.service';
+import { BaseTrackingMetadata, BaseTrackingService } from '../../services/tracking/base-tracking.service';
 
 /**
  * Dialog that handles consent to tracking services to stay gdpr compliant.
@@ -29,10 +29,24 @@ import { GdprService, NGX_GDPR_SERVICE } from '../../services/gdpr.service';
 })
 export class GdprDialogComponent<TrackingMetadata extends BaseTrackingMetadata> implements OnInit {
 
+    /**
+     * The internal gdpr dialog data. Built from config provided by the user and default values.
+     */
     gdprDialogData!: GdprDialogDataInternal;
 
+    /**
+     * All tracking services that are technical necessary and cannot be disabled.
+     */
     technicalNecessaryTrackings!: Tracking<TrackingMetadata>[];
+
+    /**
+     * All tracking services that are enabled by default but can be disabled.
+     */
     enabledByDefaultTrackings!: Tracking<TrackingMetadata>[];
+
+    /**
+     * All tracking services that are optional and disabled by default.
+     */
     disabledByDefaultTrackings!: Tracking<TrackingMetadata>[];
 
     constructor(
@@ -66,7 +80,6 @@ export class GdprDialogComponent<TrackingMetadata extends BaseTrackingMetadata> 
 
     /**
      * Checks whether the given tracking is enabled.
-     *
      * @param tracking - The tracking to check.
      * @returns Whether or not the tracking is enabled.
      */
@@ -102,7 +115,6 @@ export class GdprDialogComponent<TrackingMetadata extends BaseTrackingMetadata> 
 
     /**
      * Toggle a single tracking service.
-     *
      * @param tracking - The tracking to toggle.
      */
     toggleTracking(tracking: Tracking<TrackingMetadata>): void {

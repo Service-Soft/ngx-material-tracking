@@ -14,7 +14,7 @@ export class ScriptService {
      */
     static readonly TEMPORARY_SCRIPT_CLASS_NAME: string = 'temporary-script';
 
-    protected renderer: Renderer2;
+    private readonly renderer: Renderer2;
 
     constructor(
         private readonly router: Router,
@@ -40,7 +40,6 @@ export class ScriptService {
 
     /**
      * Loads a js script with the given content and src globally.
-     *
      * @param content - The content inside the script.
      * @param src - The src of the script tag.
      * @param location - Where the script should be added.
@@ -68,7 +67,6 @@ export class ScriptService {
 
     /**
      * Loads in a script with the given content.
-     *
      * @param content - The content of the script.
      * @param src - The src of the script tag.
      */
@@ -96,7 +94,7 @@ export class ScriptService {
         }
         // eslint-disable-next-line max-len
         const temporaryScriptElements: HTMLCollectionOf<Element> = document.getElementsByClassName(ScriptService.TEMPORARY_SCRIPT_CLASS_NAME);
-        // eslint-disable-next-line @typescript-eslint/prefer-for-of
+        // eslint-disable-next-line typescript/prefer-for-of
         for (let i: number = 0; i < temporaryScriptElements.length; i++) {
             const element: Element = temporaryScriptElements[i];
             this.renderer.removeChild(document.body, element);

@@ -23,7 +23,7 @@ getTestBed().initTestEnvironment(
 );
 
 // Then we find all the tests.
-// eslint-disable-next-line @typescript-eslint/typedef
+// eslint-disable-next-line typescript/typedef
 const context = require.context('./', true, /\.spec\.ts$/);
 // And load the modules.
 context.keys().forEach(context);

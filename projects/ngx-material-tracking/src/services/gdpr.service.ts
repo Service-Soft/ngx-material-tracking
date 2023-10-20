@@ -1,10 +1,32 @@
 import { inject, Inject, Injectable, InjectionToken, Injector } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { GdprDialogComponent } from '../components/gdpr-dialog/gdpr-dialog.component';
+import { DntSettings } from '../models/dnt-settings.model';
 import { GdprDialogData } from '../models/gdpr-dialog-data.model';
 import { Tracking } from '../models/tracking.model';
-import { BaseTrackingMetadata, BaseTrackingService } from './base-tracking.service';
+import { BaseTrackingMetadata, BaseTrackingService } from './tracking/base-tracking.service';
 
+/**
+ * Provides configuration data for handling do not track requests.
+ */
+export const NGX_GDPR_DNT_SETTINGS: InjectionToken<DntSettings> = new InjectionToken<DntSettings>(
+    'configuration data for handling do not track requests',
+    {
+        providedIn: 'root',
+        factory: () => {
+            return {
+                respect: true,
+                snackbarDuration: 5000,
+                snackbarMessage: 'We have seen your "do not track request" and disabled all tracking automatically.'
+            };
+        }
+    }
+);
+
+/**
+ * Provides configuration data for the gdpr dialog.
+ */
 export const NGX_GDPR_DIALOG_DATA: InjectionToken<GdprDialogData> = new InjectionToken<GdprDialogData>(
     'Data for the gdpr dialog',
     {
@@ -15,20 +37,28 @@ export const NGX_GDPR_DIALOG_DATA: InjectionToken<GdprDialogData> = new Injectio
     }
 );
 
-// eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
-export const NGX_GDPR_TRACKINGS: InjectionToken<Tracking<any>[]> = new InjectionToken<Tracking<any>[]>('Provider for the trackings used in the gdpr-service.', {
-    providedIn: 'root',
-    factory: (() => {
-        // eslint-disable-next-line no-console
-        console.error(
-            // eslint-disable-next-line max-len
-            'No trackings have been provided for the token NGX_GDPR_TRACKINGS\nAdd this to your app.module.ts provider array:\n{\n    provide: NGX_GDPR_TRACKINGS,\n    useValue: [...]\n}'
-        );
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    }) as () => Tracking<any>[]
-});
+/**
+ * Provider for the trackings used in the gdpr-service.
+ */
+// eslint-disable-next-line typescript/no-explicit-any
+export const NGX_GDPR_TRACKINGS: InjectionToken<Tracking<any>[]> = new InjectionToken<Tracking<any>[]>(
+    'Provider for the trackings used in the gdpr-service.',
+    {
+        providedIn: 'root',
+        factory: (() => {
+            // eslint-disable-next-line no-console
+            console.error(
+                // eslint-disable-next-line max-len
+                'No trackings have been provided for the token NGX_GDPR_TRACKINGS\nAdd this to your app.module.ts provider array:\n{\n    provide: NGX_GDPR_TRACKINGS,\n    useValue: [...]\n}'
+            );
+        // eslint-disable-next-line typescript/no-explicit-any
+        }) as () => Tracking<any>[]
+    });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+/**
+ * Provider for the trackings used in the gdpr-service.
+ */
+// eslint-disable-next-line typescript/no-explicit-any
 export const NGX_GDPR_SERVICE: InjectionToken<GdprService<any>> = new InjectionToken<GdprService<any>>(
     'Provider for the trackings used in the gdpr-service.',
     {
@@ -39,6 +69,10 @@ export const NGX_GDPR_SERVICE: InjectionToken<GdprService<any>> = new InjectionT
     }
 );
 
+/**
+ * Defines how long the users gdpr choices are saved.
+ * @default 1 month
+ */
 export const NGX_HAS_MADE_GDPR_CHOICES_DURATION_IN_MS: InjectionToken<number> = new InjectionToken<number>(
     'Defines how long the users gdpr choices are saved.',
     {
@@ -63,13 +97,19 @@ export class GdprService<TrackingMetadata extends BaseTrackingMetadata> {
      * Whether the user has already saved his preferences inside the gdpr dialog.
      */
     get hasMadeGdprChoices(): boolean {
-        const x: string | null = localStorage.getItem(this.HAS_MADE_GDPR_CHOICES_KEY);
-        if (x == null) {
+        const localData: string | null = localStorage.getItem(this.HAS_MADE_GDPR_CHOICES_KEY);
+        if (localData == null) {
+            if (this.dntEnabled) {
+                this.disableAllTrackings();
+                localStorage.setItem(this.HAS_MADE_GDPR_CHOICES_KEY, JSON.stringify({ createdAt: new Date() }));
+                this.snackbar.open(this.dntSettings.snackbarMessage, undefined, { duration: this.dntSettings.snackbarDuration });
+                return true;
+            }
             return false;
         }
         try {
-            const res: Omit<TrackingMetadata, 'enabled'> | null = JSON.parse(x) as Omit<TrackingMetadata, 'enabled'> | null;
-            if (res && ((Date.now() - new Date(res.createdAt).getTime()) < this.HAS_MADE_GDPR_CHOICES_DURATION_IN_MS)) {
+            const res: Pick<TrackingMetadata, 'createdAt'> | null = JSON.parse(localData) as Pick<TrackingMetadata, 'createdAt'> | null;
+            if (res?.createdAt && ((Date.now() - new Date(res.createdAt).getTime()) < this.HAS_MADE_GDPR_CHOICES_DURATION_IN_MS)) {
                 return true;
             }
             localStorage.removeItem(this.HAS_MADE_GDPR_CHOICES_KEY);
@@ -81,11 +121,15 @@ export class GdprService<TrackingMetadata extends BaseTrackingMetadata> {
         }
     }
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
     set hasMadeGdprChoices(value: boolean) {
         if (value) {
             localStorage.setItem(this.HAS_MADE_GDPR_CHOICES_KEY, JSON.stringify({ createdAt: new Date() }));
         }
+    }
+
+    private get dntEnabled(): boolean {
+        // eslint-disable-next-line typescript/no-unsafe-member-access, typescript/no-explicit-any
+        return navigator.doNotTrack == '1' || navigator.doNotTrack == 'yes' || (window as any).doNotTrack == '1';
     }
 
     constructor(
@@ -96,7 +140,10 @@ export class GdprService<TrackingMetadata extends BaseTrackingMetadata> {
         @Inject(NGX_HAS_MADE_GDPR_CHOICES_DURATION_IN_MS)
         private readonly HAS_MADE_GDPR_CHOICES_DURATION_IN_MS: number,
         @Inject(NGX_GDPR_DIALOG_DATA)
-        private readonly dialogData: GdprDialogData
+        private readonly dialogData: GdprDialogData,
+        @Inject(NGX_GDPR_DNT_SETTINGS)
+        private readonly dntSettings: DntSettings,
+        private readonly snackbar: MatSnackBar
     ) { }
 
     /**
@@ -119,7 +166,6 @@ export class GdprService<TrackingMetadata extends BaseTrackingMetadata> {
 
     /**
      * Disables the given tracking service if it is not technical necessary.
-     *
      * @param tracking - The tracking service to disable.
      */
     disableTracking(tracking: Tracking<TrackingMetadata>): void {
@@ -137,7 +183,6 @@ export class GdprService<TrackingMetadata extends BaseTrackingMetadata> {
 
     /**
      * Enables the given tracking service.
-     *
      * @param tracking - The tracking service to enable.
      */
     enableTracking(tracking: Tracking<TrackingMetadata>): void {

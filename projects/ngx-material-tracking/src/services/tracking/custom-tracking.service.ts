@@ -3,9 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { inject, PLATFORM_ID } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { TrackingEvent } from '../models/event.model';
-import { TrackingVisit } from '../models/visit.model';
-import { cookieStorage } from '../utilities/cookie-storage.utilities';
+import { TrackingEvent } from '../../models/event.model';
+import { TrackingVisit } from '../../models/visit.model';
+import { cookieStorage } from '../../utilities/cookie-storage.utilities';
 import { BaseTrackingMetadata, BaseTrackingService } from './base-tracking.service';
 
 /**
@@ -44,11 +44,10 @@ export abstract class CustomTrackingService<
      */
     abstract readonly EVENT_API_URL: string;
 
-    readonly METADATA_LOCATION: 'localStorage' | 'sessionStorage' | 'cookie' = 'localStorage';
+    override readonly METADATA_LOCATION: 'localStorage' | 'sessionStorage' | 'cookie' = 'localStorage';
 
     /**
      * The duration after which a visit is counted as new.
-     *
      * @default 2629746000 // (1 month)
      */
     readonly FIRST_VISIT_DURATION_IN_MS: number = 2629746000;
@@ -82,7 +81,7 @@ export abstract class CustomTrackingService<
         this.platformId = inject(PLATFORM_ID);
     }
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
+
     protected override getMetadataFromCookie(): TrackingMetadata {
         const res: TrackingMetadata = super.getMetadataFromCookie();
         const firstVisitInMs: number = new Date(res.firstVisit).getTime();
@@ -92,7 +91,7 @@ export abstract class CustomTrackingService<
         return JSON.parse(cookieStorage.getItem(this.METADATA_KEY) as string) as TrackingMetadata;
     }
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
+
     protected override getMetadataFromLocalStorage(): TrackingMetadata {
         const res: TrackingMetadata = super.getMetadataFromLocalStorage();
         const firstVisitInMs: number = new Date(res.firstVisit).getTime();
@@ -102,7 +101,7 @@ export abstract class CustomTrackingService<
         return JSON.parse(localStorage.getItem(this.METADATA_KEY) as string) as TrackingMetadata;
     }
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
+
     protected override getMetadataFromSessionStorage(): TrackingMetadata {
         const res: TrackingMetadata = super.getMetadataFromSessionStorage();
         const firstVisitInMs: number = new Date(res.firstVisit).getTime();
@@ -112,7 +111,7 @@ export abstract class CustomTrackingService<
         return JSON.parse(sessionStorage.getItem(this.METADATA_KEY) as string) as TrackingMetadata;
     }
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
+
     override onNavigationEnd(event: NavigationEnd): void {
         if (!isPlatformBrowser(this.platformId)) {
             return;
@@ -127,7 +126,6 @@ export abstract class CustomTrackingService<
     /**
      * Formats the given url.
      * By default this removes http:, https:, www., // and everything after ? Or #.
-     *
      * @param url - The url to format.
      * @returns The formatted url.
      */
@@ -145,7 +143,6 @@ export abstract class CustomTrackingService<
 
     /**
      * Tracks the visit of a specific page on the website.
-     *
      * @param visit - Data about the visit.
      */
     trackVisit(visit: Omit<TrackingVisitType, 'domain' | 'firstVisit'>): void {
@@ -162,7 +159,6 @@ export abstract class CustomTrackingService<
 
     /**
      * Tracks a specific event that happened on the website.
-     *
      * @param event - Data about the event.
      */
     trackEvent(event: Omit<TrackingEventType, 'domain'>): void {

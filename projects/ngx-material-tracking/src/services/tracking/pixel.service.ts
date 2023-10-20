@@ -1,11 +1,14 @@
 import { isPlatformBrowser } from '@angular/common';
 import { inject, Injectable, InjectionToken, PLATFORM_ID } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { PixelEventName, PixelEventProperties } from '../models/facebook-pixel.model';
-import { GdprCategory } from '../models/gdpr-category.enum';
+import { Router } from '@angular/router';
+import { PixelEventName, PixelEventProperties } from '../../models/facebook-pixel.model';
+import { GdprCategory } from '../../models/gdpr-category.enum';
+import { ScriptService } from '../script.service';
 import { BaseTrackingMetadata, BaseTrackingService } from './base-tracking.service';
-import { ScriptService } from './script.service';
 
+/**
+ * Provider for the id used for the pixel.
+ */
 export const NGX_PIXEL_ID: InjectionToken<string> = new InjectionToken<string>(
     'Provider for the id used for the pixel.',
     {
@@ -27,10 +30,16 @@ declare let fbq: Function;
  */
 @Injectable({ providedIn: 'root' })
 export class PixelService extends BaseTrackingService<BaseTrackingMetadata> {
-    readonly METADATA_LOCATION: 'localStorage' | 'sessionStorage' | 'cookie' = 'cookie';
-    readonly METADATA_KEY: string = 'facebookPixel';
-    readonly GDPR_CATEGORY: GdprCategory = GdprCategory.DISABLED_BY_DEFAULT;
+    override readonly METADATA_LOCATION: 'localStorage' | 'sessionStorage' | 'cookie' = 'cookie';
+    override readonly METADATA_KEY: string = 'facebookPixel';
+    override readonly GDPR_CATEGORY: GdprCategory = GdprCategory.DISABLED_BY_DEFAULT;
+    /**
+     * The pixel id.
+     */
     readonly PIXEL_ID: string;
+    /**
+     * The css id of the pixel script inside the html.
+     */
     readonly PIXEL_SCRIPT_ID: string = 'pixel-script';
     private readonly platformId: Object;
 
@@ -40,7 +49,7 @@ export class PixelService extends BaseTrackingService<BaseTrackingMetadata> {
         this.platformId = inject(PLATFORM_ID);
     }
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
+
     override enable(): void {
         super.enable();
         this.loadPixelScript();
@@ -70,7 +79,7 @@ export class PixelService extends BaseTrackingService<BaseTrackingMetadata> {
         );
     }
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
+
     override disable(): void {
         if (!isPlatformBrowser(this.platformId)) {
             return;
@@ -79,8 +88,7 @@ export class PixelService extends BaseTrackingService<BaseTrackingMetadata> {
         document.getElementById(this.PIXEL_SCRIPT_ID)?.remove();
     }
 
-    // eslint-disable-next-line jsdoc/require-jsdoc, @typescript-eslint/no-unused-vars
-    onNavigationEnd(event: NavigationEnd): void {
+    override onNavigationEnd(): void {
         if (this.metadata.enabled) {
             this.trackEvent('track', 'PageView');
         }
@@ -88,7 +96,6 @@ export class PixelService extends BaseTrackingService<BaseTrackingMetadata> {
 
     /**
      * Tracks an event with the pixel.
-     *
      * @param method - Either 'track' or 'customTrack'.
      * @param eventName - The name of the event.
      * @param properties - Any additional properties that should be added to the event.

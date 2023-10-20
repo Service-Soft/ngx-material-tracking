@@ -31,7 +31,6 @@ export interface PixelEventProperties {
 
     /**
      * Product IDs associated with the event, such as SKUs.
-     *
      * @example ['ABC123', 'XYZ789']
      */
     content_ids?: string[] | number[],
@@ -52,7 +51,6 @@ export interface PixelEventProperties {
      * An array of JSON objects that contains the quantity and the International Article Number (EAN) when applicable,
      * or other product or content identifier(s).
      * Id and quantity are the required fields.
-     *
      * @example [{'id': 'ABC123', 'quantity': 2}, {'id': 'XYZ789', 'quantity': 2}]
      */
     contents?: object[],

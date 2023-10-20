@@ -1,7 +1,7 @@
-<!-- eslint-disable @angular-eslint/template/cyclomatic-complexity -->
+<!-- eslint-disable angular/cyclomatic-complexity -->
 <div class="dialog-title" mat-dialog-title>
     <h1>{{gdprDialogData.title}}</h1>
-    <a (click)="allowAll()" class="close-button">{{gdprDialogData.allowAllButtonLabel}} 🗙</a>
+    <a class="close-button" (click)="allowAll()">{{gdprDialogData.allowAllButtonLabel}} 🗙</a>
 </div>
 <div mat-dialog-content>
     <b *ngIf="technicalNecessaryTrackings.length">{{gdprDialogData.technicalNecessaryTitle}}</b>
@@ -26,8 +26,8 @@
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     {{tracking.name}}
-                    <!-- eslint-disable-next-line @angular-eslint/template/no-call-expression -->
-                    <mat-slide-toggle (click)="$event.stopPropagation()" (change)="toggleTracking(tracking)" [checked]="isTrackingEnabled(tracking)"></mat-slide-toggle>
+                    <!-- eslint-disable-next-line angular/no-call-expression -->
+                    <mat-slide-toggle [checked]="isTrackingEnabled(tracking)" (click)="$event.stopPropagation()" (change)="toggleTracking(tracking)"></mat-slide-toggle>
                 </mat-panel-title>
             </mat-expansion-panel-header>
             <div *ngFor="let paragraph of tracking.description">
@@ -43,8 +43,8 @@
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     {{tracking.name}}
-                    <!-- eslint-disable-next-line @angular-eslint/template/no-call-expression -->
-                    <mat-slide-toggle (click)="$event.stopPropagation()" (change)="toggleTracking(tracking)" [checked]="isTrackingEnabled(tracking)"></mat-slide-toggle>
+                    <!-- eslint-disable-next-line angular/no-call-expression -->
+                    <mat-slide-toggle [checked]="isTrackingEnabled(tracking)" (click)="$event.stopPropagation()" (change)="toggleTracking(tracking)"></mat-slide-toggle>
                 </mat-panel-title>
             </mat-expansion-panel-header>
             <div *ngFor="let paragraph of tracking.description">

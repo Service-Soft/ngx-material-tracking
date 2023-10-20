@@ -1,10 +1,13 @@
 import { inject, Injectable, InjectionToken } from '@angular/core';
 import { Router } from '@angular/router';
-import { GdprCategory } from '../models/gdpr-category.enum';
-import { GoogleAnalyticsEvent } from '../models/google-analytics-event.model';
+import { GdprCategory } from '../../models/gdpr-category.enum';
+import { GoogleAnalyticsEvent } from '../../models/google-analytics-event.model';
+import { ScriptService } from '../script.service';
 import { BaseTrackingMetadata, BaseTrackingService } from './base-tracking.service';
-import { ScriptService } from './script.service';
 
+/**
+ * Provider for the id used for google analytics.
+ */
 export const NGX_GOOGLE_ANALYTICS_ID: InjectionToken<string> = new InjectionToken<string>(
     'Provider for the id used for google analytics.',
     {
@@ -19,6 +22,9 @@ export const NGX_GOOGLE_ANALYTICS_ID: InjectionToken<string> = new InjectionToke
     }
 );
 
+/**
+ * Provider for the google analytics anonymize ip option.
+ */
 export const NGX_GOOGLE_ANALYTICS_ANONYMIZE_IP: InjectionToken<boolean> = new InjectionToken<boolean>(
     'Provider for the google analytics anonymize ip option.',
     {
@@ -34,10 +40,16 @@ declare let gtag: Function;
  */
 @Injectable({ providedIn: 'root' })
 export class GoogleAnalyticsService extends BaseTrackingService<BaseTrackingMetadata> {
-    readonly METADATA_LOCATION: 'localStorage' | 'sessionStorage' | 'cookie' = 'cookie';
-    readonly METADATA_KEY: string = 'googleAnalytics';
-    readonly GDPR_CATEGORY: GdprCategory = GdprCategory.DISABLED_BY_DEFAULT;
+    override readonly METADATA_LOCATION: 'localStorage' | 'sessionStorage' | 'cookie' = 'cookie';
+    override readonly METADATA_KEY: string = 'googleAnalytics';
+    override readonly GDPR_CATEGORY: GdprCategory = GdprCategory.DISABLED_BY_DEFAULT;
+    /**
+     * The google analytics id.
+     */
     readonly ANALYTICS_ID: string;
+    /**
+     * Whether or not the ip should be anonymized.
+     */
     readonly ANONYMIZE_IP: boolean;
 
     constructor(router: Router) {
@@ -76,7 +88,6 @@ export class GoogleAnalyticsService extends BaseTrackingService<BaseTrackingMeta
 
     /**
      * Tracks a specific event that happened on the website.
-     *
      * @param event - Data about the event.
      */
     trackEvent(event: GoogleAnalyticsEvent): void {
