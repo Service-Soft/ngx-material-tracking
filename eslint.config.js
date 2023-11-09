@@ -1,18 +1,18 @@
-import config from 'eslint-config-service-soft';
+const config = require('eslint-config-service-soft');
 
-export default [
+module.exports = [
     ...config,
     {
         files: ['**/*.ts'],
         rules: {
-            "angular/component-selector": [
-                "warn",
+            'angular/component-selector': [
+                'warn',
                 {
-                    "style": "kebab-case",
-                    "type": "element",
-                    "prefix": "ngx-mat-tracking"
+                    'style': 'kebab-case',
+                    'type': 'element',
+                    'prefix': 'ngx-mat-tracking'
                 }
             ]
         }
     }
-]
+];

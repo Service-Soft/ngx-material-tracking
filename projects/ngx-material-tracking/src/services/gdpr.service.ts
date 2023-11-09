@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { GdprDialogComponent } from '../components/gdpr-dialog/gdpr-dialog.component';
 import { DntSettings } from '../models/dnt-settings.model';
-import { GdprDialogData } from '../models/gdpr-dialog-data.model';
+import { GDPR_DIALOG_PANEL_CLASS, GdprDialogData } from '../models/gdpr-dialog-data.model';
 import { Tracking } from '../models/tracking.model';
 import { BaseTrackingMetadata, BaseTrackingService } from './tracking/base-tracking.service';
 
@@ -40,15 +40,13 @@ export const NGX_GDPR_DIALOG_DATA: InjectionToken<GdprDialogData> = new Injectio
 /**
  * Provider for the trackings used in the gdpr-service.
  */
-// eslint-disable-next-line typescript/no-explicit-any
-export const NGX_GDPR_TRACKINGS: InjectionToken<Tracking<any>[]> = new InjectionToken<Tracking<any>[]>(
+export const NGX_GDPR_TRACKINGS: InjectionToken<Tracking[]> = new InjectionToken<Tracking[]>(
     'Provider for the trackings used in the gdpr-service.',
     {
         providedIn: 'root',
         factory: (() => {
             // eslint-disable-next-line no-console
             console.error(
-                // eslint-disable-next-line max-len
                 'No trackings have been provided for the token NGX_GDPR_TRACKINGS\nAdd this to your app.module.ts provider array:\n{\n    provide: NGX_GDPR_TRACKINGS,\n    useValue: [...]\n}'
             );
         // eslint-disable-next-line typescript/no-explicit-any
@@ -58,13 +56,12 @@ export const NGX_GDPR_TRACKINGS: InjectionToken<Tracking<any>[]> = new Injection
 /**
  * Provider for the trackings used in the gdpr-service.
  */
-// eslint-disable-next-line typescript/no-explicit-any
-export const NGX_GDPR_SERVICE: InjectionToken<GdprService<any>> = new InjectionToken<GdprService<any>>(
+export const NGX_GDPR_SERVICE: InjectionToken<GdprService> = new InjectionToken<GdprService>(
     'Provider for the trackings used in the gdpr-service.',
     {
         providedIn: 'root',
         factory: () => {
-            return inject(GdprService<BaseTrackingMetadata>);
+            return inject(GdprService);
         }
     }
 );
@@ -85,7 +82,7 @@ export const NGX_HAS_MADE_GDPR_CHOICES_DURATION_IN_MS: InjectionToken<number> = 
  * Administers tracking services.
  */
 @Injectable({ providedIn: 'root' })
-export class GdprService<TrackingMetadata extends BaseTrackingMetadata> {
+export class GdprService {
 
     /**
      * The key where the information about whether the user has made gdpr choices is stored.
@@ -108,7 +105,7 @@ export class GdprService<TrackingMetadata extends BaseTrackingMetadata> {
             return false;
         }
         try {
-            const res: Pick<TrackingMetadata, 'createdAt'> | null = JSON.parse(localData) as Pick<TrackingMetadata, 'createdAt'> | null;
+            const res: Pick<BaseTrackingMetadata, 'createdAt'> | null = JSON.parse(localData) as Pick<BaseTrackingMetadata, 'createdAt'> | null;
             if (res?.createdAt && ((Date.now() - new Date(res.createdAt).getTime()) < this.HAS_MADE_GDPR_CHOICES_DURATION_IN_MS)) {
                 return true;
             }
@@ -129,14 +126,14 @@ export class GdprService<TrackingMetadata extends BaseTrackingMetadata> {
 
     private get dntEnabled(): boolean {
         // eslint-disable-next-line typescript/no-unsafe-member-access, typescript/no-explicit-any
-        return navigator.doNotTrack == '1' || navigator.doNotTrack == 'yes' || (window as any).doNotTrack == '1';
+        return this.dntSettings.respect && navigator.doNotTrack == '1' || navigator.doNotTrack == 'yes' || (window as any).doNotTrack == '1';
     }
 
     constructor(
         private readonly injector: Injector,
         private readonly dialog: MatDialog,
         @Inject(NGX_GDPR_TRACKINGS)
-        readonly trackings: Tracking<TrackingMetadata>[],
+        readonly trackings: Tracking[],
         @Inject(NGX_HAS_MADE_GDPR_CHOICES_DURATION_IN_MS)
         private readonly HAS_MADE_GDPR_CHOICES_DURATION_IN_MS: number,
         @Inject(NGX_GDPR_DIALOG_DATA)
@@ -150,9 +147,16 @@ export class GdprService<TrackingMetadata extends BaseTrackingMetadata> {
      * Opens the gdpr dialog lazily.
      */
     async openDialog(): Promise<void> {
-        // eslint-disable-next-line max-len
         const dialogComponent: typeof GdprDialogComponent = Object.values(await import('../components/gdpr-dialog/gdpr-dialog.component'))[0];
-        this.dialog.open(dialogComponent, { data: this.dialogData, autoFocus: '.allow-all-button' });
+        this.dialog.open(dialogComponent, {
+            data: this.dialogData,
+            autoFocus: '.allow-all-button',
+            restoreFocus: false,
+            panelClass: GDPR_DIALOG_PANEL_CLASS,
+            disableClose: true,
+            // maxHeight: 'calc(100vh - 30px)',
+            maxWidth: 'calc(100vw - 30px)'
+        });
     }
 
     /**
@@ -168,7 +172,7 @@ export class GdprService<TrackingMetadata extends BaseTrackingMetadata> {
      * Disables the given tracking service if it is not technical necessary.
      * @param tracking - The tracking service to disable.
      */
-    disableTracking(tracking: Tracking<TrackingMetadata>): void {
+    disableTracking<TrackingMetadata extends BaseTrackingMetadata>(tracking: Tracking<TrackingMetadata>): void {
         this.injector.get<BaseTrackingService<TrackingMetadata>>(tracking.TrackingServiceClass).disable();
     }
 
@@ -185,7 +189,7 @@ export class GdprService<TrackingMetadata extends BaseTrackingMetadata> {
      * Enables the given tracking service.
      * @param tracking - The tracking service to enable.
      */
-    enableTracking(tracking: Tracking<TrackingMetadata>): void {
+    enableTracking<TrackingMetadata extends BaseTrackingMetadata>(tracking: Tracking<TrackingMetadata>): void {
         this.injector.get<BaseTrackingService<TrackingMetadata>>(tracking.TrackingServiceClass).enable();
     }
 }

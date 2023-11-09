@@ -76,7 +76,6 @@ export abstract class CookieUtilities {
             return;
         }
         let cookieString: string = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';';
-        // eslint-disable-next-line max-len
         cookieString += options.expireDays ? `expires=${new Date(new Date().getTime() + options.expireDays * 1000 * 60 * 60 * 24).toUTCString()};` : '';
         cookieString += options.path ? `path=${options.path};` : '';
         cookieString += options.domain ? `domain=${options.domain};` : '';

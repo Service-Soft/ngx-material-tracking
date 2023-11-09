@@ -1,8 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component } from '@angular/core';
-import { BaseTrackingMetadata, GdprService, cookieStorage } from 'ngx-material-tracking';
+import { GdprService, cookieStorage } from 'ngx-material-tracking';
 
-// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
     // eslint-disable-next-line angular/component-selector
     selector: 'app-root',
@@ -12,7 +11,7 @@ import { BaseTrackingMetadata, GdprService, cookieStorage } from 'ngx-material-t
 export class AppComponent {
 
     constructor(
-        private readonly gdprService: GdprService<BaseTrackingMetadata>
+        private readonly gdprService: GdprService
     ) {}
 
     openGdpr(): void {

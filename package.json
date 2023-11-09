@@ -14,7 +14,6 @@
         "lint:fix": "eslint projects --fix"
     },
     "private": true,
-    "type": "module",
     "dependencies": {
         "@angular/animations": "~16.2.0",
         "@angular/cdk": "^16.2.0",
@@ -35,7 +34,7 @@
         "@angular/cli": "~16.2.0",
         "@angular/compiler-cli": "~16.2.0",
         "@types/jasmine": "~4.3.5",
-        "eslint-config-service-soft": "^1.2.0",
+        "eslint-config-service-soft": "^1.2.2",
         "jasmine-core": "~5.1.0",
         "karma": "~6.4.2",
         "karma-chrome-launcher": "~3.2.0",

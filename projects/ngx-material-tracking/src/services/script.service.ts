@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, PLATFORM_ID, Renderer2, RendererFactory2 } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 
@@ -20,7 +20,9 @@ export class ScriptService {
         private readonly router: Router,
         private readonly rendererFactory: RendererFactory2,
         @Inject(PLATFORM_ID)
-        private readonly platformId: Object
+        private readonly platformId: Object,
+        @Inject(DOCUMENT)
+        private readonly document: Document
     ) {
         this.renderer = this.rendererFactory.createRenderer(null, null);
         this.init();
@@ -45,44 +47,92 @@ export class ScriptService {
      * @param location - Where the script should be added.
      * @param id - A css id for the script. Can be used to remove the script at a certain point.
      */
-    loadPermanentJsScript(content: string, src?: string, location: 'head' | 'body' = 'body', id?: string): void {
+    async loadPermanentJsScript(content: string, src?: string, location: 'head' | 'body' = 'body', id?: string): Promise<void> {
         if (!isPlatformBrowser(this.platformId)) {
             return;
         }
-        if (id && document.getElementById(id)) {
+        if (id && this.document.getElementById(id)) {
             return;
         }
-        const script: HTMLScriptElement = this.renderer.createElement('script') as HTMLScriptElement;
-        script.type = 'text/javascript';
-        if (src) {
-            script.src = src;
-        }
-        script.innerHTML = content;
-        if (id) {
-            script.id = id;
-        }
-        script.async = true;
-        this.renderer.appendChild(document[location], script);
+
+        return new Promise((resolve, reject) => {
+            const script: HTMLScriptElement = this.renderer.createElement('script') as HTMLScriptElement;
+            script.type = 'text/javascript';
+            if (src) {
+                script.src = src;
+            }
+            script.innerHTML = content;
+            if (id) {
+                script.id = id;
+            }
+            script.async = true;
+            if (src) {
+                script.addEventListener('load', () => resolve());
+                script.addEventListener('error', error => reject(error));
+            }
+            this.renderer.appendChild(this.document[location], script);
+            if (!script.src) {
+                resolve();
+            }
+        });
     }
 
     /**
      * Loads in a script with the given content.
      * @param content - The content of the script.
      * @param src - The src of the script tag.
+     * @param location - Where the temporary script should be loaded. Defaults to body.
      */
-    loadTemporaryJsScript(content: string, src?: string): void {
+    async loadTemporaryJsScript(content: string, src?: string, location: 'head' | 'body' = 'body'): Promise<void> {
         if (!isPlatformBrowser(this.platformId)) {
             return;
         }
-        const script: HTMLScriptElement = this.renderer.createElement('script') as HTMLScriptElement;
-        script.type = 'text/javascript';
-        script.className = ScriptService.TEMPORARY_SCRIPT_CLASS_NAME;
-        if (src) {
-            script.src = src;
+
+        return new Promise((resolve, reject) => {
+            const script: HTMLScriptElement = this.renderer.createElement('script') as HTMLScriptElement;
+            script.type = 'text/javascript';
+            script.className = ScriptService.TEMPORARY_SCRIPT_CLASS_NAME;
+            if (src) {
+                script.src = src;
+            }
+            script.innerHTML = content;
+            script.async = true;
+            if (src) {
+                script.addEventListener('load', () => resolve());
+                script.addEventListener('error', error => reject(error));
+            }
+            this.renderer.appendChild(this.document[location], script);
+            if (!script.src) {
+                resolve();
+            }
+        });
+    }
+
+    /**
+     * Removes a script with the given id either from the head or the body.
+     * @param id - The css id of the script to remove.
+     */
+    removeScriptById(id: string): void {
+        if (!isPlatformBrowser(this.platformId)) {
+            return;
         }
-        script.innerHTML = content;
-        script.async = true;
-        this.renderer.appendChild(document.body, script);
+
+        const element: HTMLElement | null = this.document.getElementById(id);
+        if (!element) {
+            return;
+        }
+        try {
+            this.renderer.removeChild(this.document.body, element);
+        }
+        catch (error) {
+
+        }
+        try {
+            this.renderer.removeChild(this.document.head, element);
+        }
+        catch (error) {
+
+        }
     }
 
     /**
@@ -92,12 +142,21 @@ export class ScriptService {
         if (!isPlatformBrowser(this.platformId)) {
             return;
         }
-        // eslint-disable-next-line max-len
-        const temporaryScriptElements: HTMLCollectionOf<Element> = document.getElementsByClassName(ScriptService.TEMPORARY_SCRIPT_CLASS_NAME);
-        // eslint-disable-next-line typescript/prefer-for-of
-        for (let i: number = 0; i < temporaryScriptElements.length; i++) {
-            const element: Element = temporaryScriptElements[i];
-            this.renderer.removeChild(document.body, element);
+
+        const temporaryScriptElements: HTMLCollectionOf<Element> = this.document.getElementsByClassName(ScriptService.TEMPORARY_SCRIPT_CLASS_NAME);
+        for (const element of Array.from(temporaryScriptElements)) {
+            try {
+                this.renderer.removeChild(this.document.body, element);
+            }
+            catch (error) {
+
+            }
+            try {
+                this.renderer.removeChild(this.document.head, element);
+            }
+            catch (error) {
+
+            }
         }
     }
 }

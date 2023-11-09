@@ -26,7 +26,6 @@ module.exports = function (config) {
         },
         coverageReporter: {
             dir: require('path').join(__dirname, '../../coverage/ngx-material-tracking-showcase'),
-            // eslint-disable-next-line cspell/spellchecker
             subdir: '.',
             reporters: [
                 { type: 'html' },

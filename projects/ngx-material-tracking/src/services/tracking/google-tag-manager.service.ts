@@ -2,6 +2,7 @@ import { Injectable, InjectionToken, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { GdprCategory } from '../../models/gdpr-category.enum';
 import { GoogleAnalyticsEvent } from '../../models/google-analytics-event.model';
+import { ScriptService } from '../script.service';
 import { BaseTrackingMetadata, BaseTrackingService } from './base-tracking.service';
 
 /**
@@ -14,7 +15,6 @@ export const NGX_GOOGLE_TAG_MANAGER_ID: InjectionToken<string> = new InjectionTo
         factory: (() => {
             // eslint-disable-next-line no-console
             console.error(
-                // eslint-disable-next-line max-len
                 'No google tag manager id has been provided for the token NGX_GOOGLE_TAG_MANAGER_ID\nAdd this to your app.module.ts provider array:\n{\n    provide: NGX_GOOGLE_TAG_MANAGER_ID,\n    useValue: \'myTagManagerId\'\n}'
             );
         }) as () => string
@@ -42,10 +42,18 @@ export class GoogleTagManagerService extends BaseTrackingService<BaseTrackingMet
 
     private isLoaded: boolean = false;
     private readonly GTM_ID: string;
+    private readonly GTM_SCRIPT_ID: string = 'gtm-script';
+    private readonly scriptService: ScriptService;
 
     constructor(router: Router) {
         super(router, { enabled: false });
         this.GTM_ID = inject(NGX_GOOGLE_TAG_MANAGER_ID);
+        this.scriptService = inject(ScriptService);
+    }
+
+    override async enable(): Promise<void> {
+        super.enable();
+        await this.loadGTMScript();
     }
 
     override onNavigationEnd(): void {
@@ -57,15 +65,22 @@ export class GoogleTagManagerService extends BaseTrackingService<BaseTrackingMet
         }
     }
 
+    override disable(): void {
+        super.disable();
+        this.scriptService.removeScriptById(this.GTM_SCRIPT_ID);
+        this.isLoaded = false;
+    }
+
     /**
      * Tracks the given event by pushing it to the data layer.
+     * @param name - The name of the event to track.
      * @param event - The event data to track.
      */
-    trackEvent(event: GoogleAnalyticsEvent): void {
+    trackEvent(name: string, event: GoogleAnalyticsEvent): void {
         if (this.metadata.enabled) {
             void this.pushTag({
-                event: event.name,
-                ...event.additionalParameters
+                ...event,
+                event: name
             });
         }
     }
@@ -76,22 +91,12 @@ export class GoogleTagManagerService extends BaseTrackingService<BaseTrackingMet
      */
     private async pushTag(item: object): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            if (!this.isLoaded) {
-                this.addGtmToDom()
-                    .then(() => {
-                        this.pushOnDataLayer(item);
-                        resolve();
-                    })
-                    .catch(error => {
-                        reject(error);
-                        return;
-                    });
-            }
-            else {
-                this.pushOnDataLayer(item);
-                resolve();
-                return;
-            }
+            this.loadGTMScript()
+                .then(() => {
+                    this.pushOnDataLayer(item);
+                    resolve();
+                })
+                .catch(error => reject(error));
         });
     }
 
@@ -114,30 +119,25 @@ export class GoogleTagManagerService extends BaseTrackingService<BaseTrackingMet
         dataLayer.push(obj);
     }
 
-    private async addGtmToDom(): Promise<boolean> {
-        return new Promise((resolve, reject) => {
-            if (this.isLoaded) {
-                resolve(this.isLoaded);
-                return;
-            }
-            this.pushOnDataLayer({
-                'gtm.start': new Date().getTime(),
-                event: 'gtm.js'
-            });
+    private async loadGTMScript(): Promise<void> {
+        if (this.isLoaded) {
+            return;
+        }
 
-            const gtmScript: HTMLScriptElement = document.createElement('script');
-
-            gtmScript.id = 'GTMscript';
-            gtmScript.async = true;
-            gtmScript.src = this.applyGtmQueryParams('https://www.googletagmanager.com/gtm.js');
-            gtmScript.addEventListener('load', () => {
-                this.isLoaded = true;
-                resolve(this.isLoaded);
-            });
-            gtmScript.addEventListener('error', () => {
-                reject(false);
-            });
-            document.head.insertBefore(gtmScript, document.head.firstChild);
+        this.pushOnDataLayer({
+            'gtm.start': new Date().getTime(),
+            event: 'gtm.js'
         });
+
+        try {
+            await this.scriptService.loadPermanentJsScript('', this.applyGtmQueryParams('https://www.googletagmanager.com/gtm.js'), 'head', this.GTM_SCRIPT_ID);
+            this.isLoaded = true;
+        }
+        catch (error) {
+            // eslint-disable-next-line no-console
+            console.error(`Failed to load GTM Script from ${this.applyGtmQueryParams('https://www.googletagmanager.com/gtm.js')}`);
+            this.disable();
+            return;
+        }
     }
 }

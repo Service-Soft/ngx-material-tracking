@@ -15,7 +15,6 @@ export const NGX_GOOGLE_ANALYTICS_ID: InjectionToken<string> = new InjectionToke
         factory: (() => {
             // eslint-disable-next-line no-console
             console.error(
-                // eslint-disable-next-line max-len
                 'No google analytics id has been provided for the token NGX_GOOGLE_ANALYTICS_ID\nAdd this to your app.module.ts provider array:\n{\n    provide: NGX_GOOGLE_ANALYTICS_ID,\n    useValue: \'myAnalyticsId\'\n}'
             );
         }) as () => string
@@ -51,51 +50,97 @@ export class GoogleAnalyticsService extends BaseTrackingService<BaseTrackingMeta
      * Whether or not the ip should be anonymized.
      */
     readonly ANONYMIZE_IP: boolean;
+    private readonly ANALYTICS_SCRIPT_ID: string = 'analytics-script';
+    private readonly GTAG_SCRIPT_ID: string = 'gtag-script';
+    private readonly scriptService: ScriptService;
+    private isLoaded: boolean = false;
 
     constructor(router: Router) {
         super(router, { enabled: false });
         this.ANALYTICS_ID = inject(NGX_GOOGLE_ANALYTICS_ID);
         this.ANONYMIZE_IP = inject(NGX_GOOGLE_ANALYTICS_ANONYMIZE_IP);
-        this.loadScripts();
+        this.scriptService = inject(ScriptService);
+    }
+
+    override async enable(): Promise<void> {
+        super.enable();
+        await this.loadScripts();
     }
 
     /**
      * Loads all google analytics scripts.
      */
-    protected loadScripts(): void {
-        const scriptService: ScriptService = inject(ScriptService);
-        scriptService.loadPermanentJsScript('', `https://www.googletagmanager.com/gtag/js?id=${this.ANALYTICS_ID}`, 'head');
-        scriptService.loadPermanentJsScript(
-            `
-                window.dataLayer = window.dataLayer || [];
-                function gtag() { dataLayer.push(arguments); }
-                gtag('js', new Date());
-            `,
-            undefined,
-            'head'
-        );
+    protected async loadScripts(): Promise<void> {
+        if (this.isLoaded) {
+            return;
+        }
+
+        try {
+            await this.scriptService.loadPermanentJsScript('', `https://www.googletagmanager.com/gtag/js?id=${this.ANALYTICS_ID}`, 'head', this.ANALYTICS_SCRIPT_ID);
+        }
+        catch (error) {
+            // eslint-disable-next-line no-console
+            console.error(`Failed to load Google Analytics Script from https://www.googletagmanager.com/gtag/js?id=${this.ANALYTICS_ID}`);
+            this.disable();
+            return;
+        }
+        try {
+            await this.scriptService.loadPermanentJsScript(
+                `
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag() { dataLayer.push(arguments); }
+                    // gtag('js', new Date());
+                `,
+                undefined,
+                'head',
+                this.GTAG_SCRIPT_ID
+            );
+        }
+        catch (error) {
+            // eslint-disable-next-line no-console
+            console.error('Failed to load GTAG Script:', error);
+            this.disable();
+            return;
+        }
+
+        this.isLoaded = true;
     }
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    onNavigationEnd(): void {
-        if (this.metadata.enabled) {
-            gtag('config', this.ANALYTICS_ID, {
-                'anonymize_ip': this.ANONYMIZE_IP,
-                'page_path': window.location.href
-            });
+    override async onNavigationEnd(): Promise<void> {
+        if (!this.metadata.enabled) {
+            return;
         }
+        return new Promise<void>((resolve, reject) => {
+            this.loadScripts()
+                .then(() => {
+                    gtag('config', this.ANALYTICS_ID, {
+                        'anonymize_ip': this.ANONYMIZE_IP,
+                        'page_path': window.location.href
+                    });
+                    resolve();
+                })
+                .catch(error => reject(error));
+        });
+    }
+
+    override disable(): void {
+        super.disable();
+        this.scriptService.removeScriptById(this.ANALYTICS_SCRIPT_ID);
+        this.scriptService.removeScriptById(this.GTAG_SCRIPT_ID);
+        this.isLoaded = false;
     }
 
     /**
      * Tracks a specific event that happened on the website.
+     * @param name - The name of the event to track.
      * @param event - Data about the event.
      */
-    trackEvent(event: GoogleAnalyticsEvent): void {
+    trackEvent(name: string, event: GoogleAnalyticsEvent): void {
         if (this.metadata.enabled) {
-            gtag('event', event.name, {
+            gtag('event', name, {
+                ...event,
                 'send_to': this.ANALYTICS_ID,
-                'anonymize_ip': this.ANONYMIZE_IP,
-                ...event.additionalParameters
+                'anonymize_ip': this.ANONYMIZE_IP
             });
         }
     }

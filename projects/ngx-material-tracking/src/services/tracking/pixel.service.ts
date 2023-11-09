@@ -1,8 +1,7 @@
-import { isPlatformBrowser } from '@angular/common';
-import { inject, Injectable, InjectionToken, PLATFORM_ID } from '@angular/core';
+import { inject, Injectable, InjectionToken } from '@angular/core';
 import { Router } from '@angular/router';
-import { PixelEventName, PixelEventProperties } from '../../models/facebook-pixel.model';
 import { GdprCategory } from '../../models/gdpr-category.enum';
+import { PixelEventName, PixelEventProperties } from '../../models/meta-pixel.model';
 import { ScriptService } from '../script.service';
 import { BaseTrackingMetadata, BaseTrackingService } from './base-tracking.service';
 
@@ -16,7 +15,6 @@ export const NGX_PIXEL_ID: InjectionToken<string> = new InjectionToken<string>(
         factory: (() => {
             // eslint-disable-next-line no-console
             console.error(
-                // eslint-disable-next-line max-len
                 'No pixel id has been provided for the token NGX_PIXEL_ID\nAdd this to your app.module.ts provider array:\n{\n    provide: NGX_PIXEL_ID,\n    useValue: \'myPixelId\'\n}'
             );
         }) as () => string
@@ -41,56 +39,61 @@ export class PixelService extends BaseTrackingService<BaseTrackingMetadata> {
      * The css id of the pixel script inside the html.
      */
     readonly PIXEL_SCRIPT_ID: string = 'pixel-script';
-    private readonly platformId: Object;
+    private readonly scriptService: ScriptService;
+    private isLoaded: boolean = false;
 
     constructor(router: Router) {
         super(router, { enabled: false });
         this.PIXEL_ID = inject(NGX_PIXEL_ID);
-        this.platformId = inject(PLATFORM_ID);
+        this.scriptService = inject(ScriptService);
     }
 
 
-    override enable(): void {
+    override async enable(): Promise<void> {
         super.enable();
-        this.loadPixelScript();
+        await this.loadPixelScript();
     }
 
     /**
      * Adds the Facebook Pixel tracking script to the application.
      */
-    protected loadPixelScript(): void {
-        const scriptService: ScriptService = inject(ScriptService);
-        scriptService.loadPermanentJsScript(
-            `
-                var pixelCode = function(f,b,e,v,n,t,s)
-                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-                n.queue=[];t=b.createElement(e);t.async=!0;
-                t.src=v;s=b.getElementsByTagName(e)[0];
-                s.parentNode.insertBefore(t,s)}(window, document,'script',
-                'https://connect.facebook.net/en_US/fbevents.js');
-                fbq('init', '${this.PIXEL_ID}');
-                fbq('track', 'PageView');
-            `,
-            undefined,
-            'head',
-            this.PIXEL_SCRIPT_ID
-        );
+    protected async loadPixelScript(): Promise<void> {
+        try {
+            await this.scriptService.loadPermanentJsScript(
+                `
+                    var pixelCode = function(f,b,e,v,n,t,s)
+                    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                    n.queue=[];t=b.createElement(e);t.async=!0;
+                    t.src=v;s=b.getElementsByTagName(e)[0];
+                    s.parentNode.insertBefore(t,s)}(window, document,'script',
+                    'https://connect.facebook.net/en_US/fbevents.js');
+                    fbq('init', '${this.PIXEL_ID}');
+                    fbq('track', 'PageView');
+                `,
+                undefined,
+                'head',
+                this.PIXEL_SCRIPT_ID
+            );
+            this.isLoaded = true;
+        }
+        catch (error) {
+            // eslint-disable-next-line no-console
+            console.error(`Failed to load Pixel Script with PIXEL_ID ${this.PIXEL_ID}`);
+            this.disable();
+        }
     }
 
-
     override disable(): void {
-        if (!isPlatformBrowser(this.platformId)) {
-            return;
-        }
         super.disable();
-        document.getElementById(this.PIXEL_SCRIPT_ID)?.remove();
+        this.scriptService.removeScriptById(this.PIXEL_SCRIPT_ID);
+        this.isLoaded = false;
     }
 
     override onNavigationEnd(): void {
         if (this.metadata.enabled) {
-            this.trackEvent('track', 'PageView');
+            void this.trackEvent('track', 'PageView');
         }
     }
 
@@ -100,7 +103,20 @@ export class PixelService extends BaseTrackingService<BaseTrackingMetadata> {
      * @param eventName - The name of the event.
      * @param properties - Any additional properties that should be added to the event.
      */
-    trackEvent(method: 'track' | 'trackCustom', eventName: PixelEventName | string, properties?: PixelEventProperties): void {
-        fbq(method, eventName, properties);
+    async trackEvent(method: 'track' | 'trackCustom', eventName: PixelEventName | string, properties?: PixelEventProperties): Promise<void> {
+        return new Promise((resolve, reject) => {
+            if (!this.isLoaded) {
+                this.loadPixelScript()
+                    .then(() => {
+                        fbq(method, eventName, properties);
+                        resolve();
+                    })
+                    .catch(error => reject(error));
+            }
+            else {
+                fbq(method, eventName, properties);
+                resolve();
+            }
+        });
     }
 }

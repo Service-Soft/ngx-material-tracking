@@ -6,39 +6,47 @@ mat-panel-title {
     }
 }
 
-b {
-    display: block;
-    margin-bottom: 5px;
-}
-
 .dialog-title {
     display: flex;
-    border-bottom: 1px solid black;
-    margin-top: 12px;
-    margin-bottom: 10px;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid gray;
 
     h1 {
         margin-bottom: 0px;
     }
+
+    .close-button {
+        margin-left: auto;
+    }
+
+    .close-button:hover {
+        cursor: pointer;
+        color: red;
+        transition: color 0.5s ease;
+    }
 }
 
-.close-button {
-    margin-left: auto;
+.dialog-title::before {
+    height: auto;
 }
 
-.close-button:hover {
-    cursor: pointer;
-    color: red;
-    transition: color 0.5s ease;
+.dialog-content {
+    padding: 12px;
+
+    b {
+        display: block;
+        margin-bottom: 5px;
+        margin-top: 24px;
+    }
 }
 
 .dialog-actions {
-    border-top: 1px solid black;
-    margin-top: 10px;
-    padding-top: 16px;
+    padding: 12px;
     min-width: 650px;
     display: flex;
     flex-wrap: wrap;
+    border-top: 1px solid gray;
 
     .allow-all-button {
         flex-basis: 50%;
@@ -51,6 +59,25 @@ b {
         flex-basis: calc(25% - 8px);
         margin-left: 8px;
     }
+
+    .links {
+        margin-top: 6px;
+        display: flex;
+        width: 100%;
+        gap: 12px;
+        justify-content: center;
+
+        a {
+            color: rgba(0, 0, 0, 0.6);
+            text-decoration: none;
+        }
+
+        a:hover {
+            cursor: pointer;
+            color: initial;
+            transition: color 0.5s ease;
+        }
+    }
 }
 
 @media(max-width: 900px) {
@@ -59,7 +86,7 @@ b {
 
         .allow-all-button {
             flex-basis: 100%;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
 
         .save-settings-button {
@@ -74,10 +101,16 @@ b {
 }
 
 @media(max-width: 575px) {
+    .dialog-title {
+        .close-button {
+            display: none;
+        }
+    }
+
     .dialog-actions {
 
         .save-settings-button {
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
 
         .disallow-all-button {

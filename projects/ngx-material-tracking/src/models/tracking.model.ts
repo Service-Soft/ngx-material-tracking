@@ -45,6 +45,5 @@ export interface Tracking<
     /**
      * The service that is handling the tracking.
      */
-    // eslint-disable-next-line max-len
     TrackingServiceClass: BaseTrackingServiceClassType<TrackingMetadata> | CustomBaseTrackingServiceClassType<CustomTrackingMetadata, TrackingVisitType, TrackingEventType>
 }

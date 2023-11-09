@@ -1,9 +1,12 @@
 <!-- eslint-disable angular/cyclomatic-complexity -->
 <div class="dialog-title" mat-dialog-title>
     <h1>{{gdprDialogData.title}}</h1>
-    <a class="close-button" (click)="allowAll()">{{gdprDialogData.allowAllButtonLabel}} 🗙</a>
+    <a *ngIf="gdprDialogData.displayCloseAllowsAll" class="close-button" (click)="allowAll()">{{gdprDialogData.allowAllButtonLabel}} 🗙</a>
 </div>
-<div mat-dialog-content>
+<div class="dialog-content" mat-dialog-content>
+    <div [innerHTML]="gdprDialogData.text">
+    </div>
+
     <b *ngIf="technicalNecessaryTrackings.length">{{gdprDialogData.technicalNecessaryTitle}}</b>
     <mat-accordion *ngIf="technicalNecessaryTrackings.length" displayMode="flat">
         <mat-expansion-panel *ngFor="let tracking of technicalNecessaryTrackings">
@@ -18,7 +21,6 @@
             </div>
         </mat-expansion-panel>
     </mat-accordion>
-    <br *ngIf="technicalNecessaryTrackings.length">
 
     <b *ngIf="enabledByDefaultTrackings.length">{{gdprDialogData.enabledByDefaultTitle}}</b>
     <mat-accordion *ngIf="enabledByDefaultTrackings.length" displayMode="flat">
@@ -35,7 +37,6 @@
             </div>
         </mat-expansion-panel>
     </mat-accordion>
-    <br *ngIf="enabledByDefaultTrackings.length">
 
     <b *ngIf="disabledByDefaultTrackings.length">{{gdprDialogData.disabledByDefaultTitle}}</b>
     <mat-accordion *ngIf="disabledByDefaultTrackings.length" displayMode="flat">
@@ -52,10 +53,13 @@
             </div>
         </mat-expansion-panel>
     </mat-accordion>
-    <br *ngIf="disabledByDefaultTrackings.length">
 </div>
 <div class="dialog-actions" mat-dialog-actions>
     <button type="button" class="allow-all-button" mat-raised-button (click)="allowAll()">{{gdprDialogData.allowAllButtonLabel}}</button>
     <button type="button" class="save-settings-button" mat-raised-button (click)="saveSettings()">{{gdprDialogData.saveSettingsButtonLabel}}</button>
     <button type="button" class="disallow-all-button" mat-button (click)="disallowAll()">{{gdprDialogData.disallowAllButtonLabel}}</button>
+    <div class="links">
+        <a target="_blank" rel="noopener noreferrer" [href]="gdprDialogData.privacyRoute">{{gdprDialogData.privacyDisplayName}}</a>
+        <a target="_blank" rel="noopener noreferrer" [href]="gdprDialogData.imprintRoute">{{gdprDialogData.imprintDisplayName}}</a>
+    </div>
 </div>

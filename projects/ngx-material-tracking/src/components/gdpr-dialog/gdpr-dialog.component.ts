@@ -27,7 +27,7 @@ import { BaseTrackingMetadata, BaseTrackingService } from '../../services/tracki
         MatExpansionModule
     ]
 })
-export class GdprDialogComponent<TrackingMetadata extends BaseTrackingMetadata> implements OnInit {
+export class GdprDialogComponent implements OnInit {
 
     /**
      * The internal gdpr dialog data. Built from config provided by the user and default values.
@@ -37,43 +37,39 @@ export class GdprDialogComponent<TrackingMetadata extends BaseTrackingMetadata> 
     /**
      * All tracking services that are technical necessary and cannot be disabled.
      */
-    technicalNecessaryTrackings!: Tracking<TrackingMetadata>[];
+    technicalNecessaryTrackings!: Tracking[];
 
     /**
      * All tracking services that are enabled by default but can be disabled.
      */
-    enabledByDefaultTrackings!: Tracking<TrackingMetadata>[];
+    enabledByDefaultTrackings!: Tracking[];
 
     /**
      * All tracking services that are optional and disabled by default.
      */
-    disabledByDefaultTrackings!: Tracking<TrackingMetadata>[];
+    disabledByDefaultTrackings!: Tracking[];
 
     constructor(
         @Inject(NGX_GDPR_SERVICE)
-        readonly gdprService: GdprService<TrackingMetadata>,
-        private readonly dialogRef: MatDialogRef<GdprDialogComponent<TrackingMetadata>>,
+        readonly gdprService: GdprService,
+        private readonly dialogRef: MatDialogRef<GdprDialogComponent>,
         private readonly injector: Injector,
         @Inject(MAT_DIALOG_DATA)
         private readonly dialogData?: GdprDialogData
     ) { }
 
     ngOnInit(): void {
-        this.dialogRef.disableClose = true;
         this.gdprDialogData = new GdprDialogDataInternal(this.dialogData);
         this.technicalNecessaryTrackings = this.gdprService.trackings.filter(t => {
-            // eslint-disable-next-line max-len
-            const trackingCategory: GdprCategory = this.injector.get<BaseTrackingService<TrackingMetadata>>(t.TrackingServiceClass).GDPR_CATEGORY;
+            const trackingCategory: GdprCategory = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(t.TrackingServiceClass).GDPR_CATEGORY;
             return trackingCategory === GdprCategory.TECHNICAL_NECESSARY;
         });
         this.enabledByDefaultTrackings = this.gdprService.trackings.filter(t => {
-            // eslint-disable-next-line max-len
-            const trackingCategory: GdprCategory = this.injector.get<BaseTrackingService<TrackingMetadata>>(t.TrackingServiceClass).GDPR_CATEGORY;
+            const trackingCategory: GdprCategory = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(t.TrackingServiceClass).GDPR_CATEGORY;
             return trackingCategory === GdprCategory.ENABLED_BY_DEFAULT;
         });
         this.disabledByDefaultTrackings = this.gdprService.trackings.filter(t => {
-            // eslint-disable-next-line max-len
-            const trackingCategory: GdprCategory = this.injector.get<BaseTrackingService<TrackingMetadata>>(t.TrackingServiceClass).GDPR_CATEGORY;
+            const trackingCategory: GdprCategory = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(t.TrackingServiceClass).GDPR_CATEGORY;
             return trackingCategory === GdprCategory.DISABLED_BY_DEFAULT;
         });
     }
@@ -83,7 +79,7 @@ export class GdprDialogComponent<TrackingMetadata extends BaseTrackingMetadata> 
      * @param tracking - The tracking to check.
      * @returns Whether or not the tracking is enabled.
      */
-    isTrackingEnabled(tracking: Tracking<TrackingMetadata>): boolean {
+    isTrackingEnabled<TrackingMetadata extends BaseTrackingMetadata>(tracking: Tracking<TrackingMetadata>): boolean {
         return this.injector.get<BaseTrackingService<TrackingMetadata>>(tracking.TrackingServiceClass).metadata.enabled;
     }
 
@@ -117,7 +113,7 @@ export class GdprDialogComponent<TrackingMetadata extends BaseTrackingMetadata> 
      * Toggle a single tracking service.
      * @param tracking - The tracking to toggle.
      */
-    toggleTracking(tracking: Tracking<TrackingMetadata>): void {
+    toggleTracking<TrackingMetadata extends BaseTrackingMetadata>(tracking: Tracking<TrackingMetadata>): void {
         const trackingService: BaseTrackingService<TrackingMetadata> = this.injector.get<BaseTrackingService<TrackingMetadata>>(
             tracking.TrackingServiceClass
         );

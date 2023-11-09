@@ -5,7 +5,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { GdprDialogData, GoogleAnalyticsService, GoogleTagManagerService, NGX_GDPR_DIALOG_DATA, NGX_GDPR_TRACKINGS, NGX_GOOGLE_ANALYTICS_ID, NGX_GOOGLE_TAG_MANAGER_ID, Tracking } from 'ngx-material-tracking';
+import { DntSettings, GdprDialogData, GoogleAnalyticsService, GoogleTagManagerService, NGX_GDPR_DIALOG_DATA, NGX_GDPR_DNT_SETTINGS, NGX_GDPR_TRACKINGS, NGX_GOOGLE_ANALYTICS_ID, NGX_GOOGLE_TAG_MANAGER_ID, NGX_PIXEL_ID, PixelService, Tracking } from 'ngx-material-tracking';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { InternalAnalyticsService } from './services/internal-analytics.service';
@@ -30,6 +30,11 @@ const trackings: Tracking[] = [
         name: 'GTM',
         description: ['Google Tag'],
         TrackingServiceClass: GoogleTagManagerService
+    },
+    {
+        name: 'Pixel',
+        description: ['Pixel'],
+        TrackingServiceClass: PixelService
     }
 ];
 
@@ -40,7 +45,18 @@ const gdprDialogData: GdprDialogData = {
     saveSettingsButtonLabel: 'Custom save',
     technicalNecessaryTitle: 'Custom necessary',
     enabledByDefaultTitle: 'Custom functional',
-    disabledByDefaultTitle: 'Custom tracking'
+    disabledByDefaultTitle: 'Custom tracking',
+    displayCloseAllowsAll: true,
+    imprintDisplayName: 'Custom Imprint',
+    imprintRoute: 'custom-imprint',
+    privacyDisplayName: 'Custom Privacy',
+    privacyRoute: 'custom-privacy'
+};
+
+const dntSettings: DntSettings = {
+    respect: true,
+    snackbarDuration: 5000,
+    snackbarMessage: 'Custom DNT Message'
 };
 
 @NgModule({
@@ -70,15 +86,23 @@ const gdprDialogData: GdprDialogData = {
             useValue: 'test123'
         },
         {
+            provide: NGX_PIXEL_ID,
+            useValue: 'test123'
+        },
+        {
             provide: NGX_GDPR_DIALOG_DATA,
             useValue: gdprDialogData
+        },
+        {
+            provide: NGX_GDPR_DNT_SETTINGS,
+            useValue: dntSettings
         },
         {
             provide: APP_INITIALIZER,
             useFactory: () => {
                 return () => {};
             },
-            deps: [GoogleAnalyticsService, InternalAnalyticsService, GoogleTagManagerService],
+            deps: [GoogleAnalyticsService, GoogleTagManagerService, PixelService],
             multi: true
         }
     ],

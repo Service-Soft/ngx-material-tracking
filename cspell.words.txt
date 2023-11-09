@@ -1,3 +1,5 @@
 Gdpr
 gdpr
 GDPR
+noopener
+noreferrer
