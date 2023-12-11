@@ -10,9 +10,15 @@ export class InternalAnalyticsService extends CustomTrackingService<BaseCustomTr
     override readonly VISIT_API_URL: string = 'http://localhost:3000/visits';
     override readonly EVENT_API_URL: string = 'http://localhost:3000/events';
     override readonly METADATA_KEY: string = 'internalAnalytics';
-    override readonly GDPR_CATEGORY: GdprCategory = GdprCategory.ENABLED_BY_DEFAULT;
+    override readonly GDPR_CATEGORY: GdprCategory = GdprCategory.TECHNICAL_NECESSARY;
 
     constructor(router: Router, http: HttpClient) {
         super(router, http, { enabled: true });
+    }
+
+    override trackVisit(visit: Omit<TrackingVisit, 'domain' | 'firstVisit'>): void {
+        // eslint-disable-next-line no-console
+        console.log(`Tracks visit for ${visit.targetSite}`);
+        return;
     }
 }

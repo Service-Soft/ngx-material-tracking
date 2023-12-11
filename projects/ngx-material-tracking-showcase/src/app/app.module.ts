@@ -50,7 +50,8 @@ const gdprDialogData: GdprDialogData = {
     imprintDisplayName: 'Custom Imprint',
     imprintRoute: 'custom-imprint',
     privacyDisplayName: 'Custom Privacy',
-    privacyRoute: 'custom-privacy'
+    privacyRoute: 'custom-privacy',
+    categoriesOpenedByDefault: false
 };
 
 const dntSettings: DntSettings = {
@@ -102,7 +103,7 @@ const dntSettings: DntSettings = {
             useFactory: () => {
                 return () => {};
             },
-            deps: [GoogleAnalyticsService, GoogleTagManagerService, PixelService],
+            deps: [GoogleAnalyticsService, GoogleTagManagerService, PixelService, InternalAnalyticsService],
             multi: true
         }
     ],

@@ -19,6 +19,8 @@ export class GdprDialogDataInternal implements GdprDialogData {
     privacyRoute: string;
     imprintDisplayName: string;
     imprintRoute: string;
+    showOnlyCategories: boolean;
+    categoriesOpenedByDefault: boolean;
 
     constructor(data?: GdprDialogData) {
         this.title = data?.title ?? 'Tracking';
@@ -33,6 +35,8 @@ export class GdprDialogDataInternal implements GdprDialogData {
         this.privacyRoute = data?.privacyRoute ?? 'privacy';
         this.imprintDisplayName = data?.imprintDisplayName ?? 'Imprint';
         this.imprintRoute = data?.imprintRoute ?? 'imprint';
+        this.showOnlyCategories = data?.showOnlyCategories ?? false;
+        this.categoriesOpenedByDefault = data?.categoriesOpenedByDefault ?? true;
 
         this.text = data?.text ?? `
             <p>

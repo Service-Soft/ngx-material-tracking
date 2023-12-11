@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -24,7 +25,8 @@ import { BaseTrackingMetadata, BaseTrackingService } from '../../services/tracki
         MatButtonModule,
         MatSlideToggleModule,
         MatDialogModule,
-        MatExpansionModule
+        MatExpansionModule,
+        MatCheckboxModule
     ]
 })
 export class GdprDialogComponent implements OnInit {
@@ -49,6 +51,83 @@ export class GdprDialogComponent implements OnInit {
      */
     disabledByDefaultTrackings!: Tracking[];
 
+    /**
+     * Whether or not the technical necessary tracking services are opened.
+     */
+    technicalNecessaryOpened!: boolean;
+    /**
+     * Whether or not the enabled by default tracking services are opened.
+     */
+    enabledByDefaultOpened!: boolean;
+    /**
+     * Whether or not the disabled by default tracking services are opened.
+     */
+    disabledByDefaultOpened!: boolean;
+
+    // eslint-disable-next-line jsdoc/require-returns
+    /**
+     * Whether or not all enabled by default trackings are enabled.
+     */
+    get allEnabledByDefaultEnabled(): boolean {
+        return !this.enabledByDefaultTrackings.find(t => {
+            const trackingService: BaseTrackingService<BaseTrackingMetadata> = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
+                t.TrackingServiceClass
+            );
+            return !trackingService.metadata.enabled;
+        });
+    }
+
+    // eslint-disable-next-line jsdoc/require-returns
+    /**
+     * Whether or not some of the enabled by default trackings are enabled.
+     */
+    get someEnabledByDefaultEnabled(): boolean {
+        return !!this.enabledByDefaultTrackings.find(t => {
+            const trackingService: BaseTrackingService<BaseTrackingMetadata> = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
+                t.TrackingServiceClass
+            );
+            return trackingService.metadata.enabled;
+        })
+        && !!this.enabledByDefaultTrackings.find(t => {
+            const trackingService: BaseTrackingService<BaseTrackingMetadata> = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
+                t.TrackingServiceClass
+            );
+            return !trackingService.metadata.enabled;
+        });
+    }
+
+    // eslint-disable-next-line jsdoc/require-returns
+    /**
+     * Whether or not all disabled by default trackings are enabled.
+     */
+    get allDisabledByDefaultEnabled(): boolean {
+        return !this.disabledByDefaultTrackings.find(t => {
+            const trackingService: BaseTrackingService<BaseTrackingMetadata> = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
+                t.TrackingServiceClass
+            );
+            return !trackingService.metadata.enabled;
+        });
+    }
+
+    // eslint-disable-next-line jsdoc/require-returns
+    /**
+     * Whether or not some of the disabled by default trackings are enabled.
+     */
+    get someDisabledByDefaultEnabled(): boolean {
+        return !!this.disabledByDefaultTrackings.find(t => {
+            const trackingService: BaseTrackingService<BaseTrackingMetadata> = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
+                t.TrackingServiceClass
+            );
+            return trackingService.metadata.enabled;
+        })
+        && !!this.disabledByDefaultTrackings.find(t => {
+            const trackingService: BaseTrackingService<BaseTrackingMetadata> = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
+                t.TrackingServiceClass
+            );
+            return !trackingService.metadata.enabled;
+        });
+    }
+
     constructor(
         @Inject(NGX_GDPR_SERVICE)
         readonly gdprService: GdprService,
@@ -60,6 +139,9 @@ export class GdprDialogComponent implements OnInit {
 
     ngOnInit(): void {
         this.gdprDialogData = new GdprDialogDataInternal(this.dialogData);
+        this.technicalNecessaryOpened = this.gdprDialogData.categoriesOpenedByDefault ? true : false;
+        this.enabledByDefaultOpened = this.gdprDialogData.categoriesOpenedByDefault ? true : false;
+        this.disabledByDefaultOpened = this.gdprDialogData.categoriesOpenedByDefault ? true : false;
         this.technicalNecessaryTrackings = this.gdprService.trackings.filter(t => {
             const trackingCategory: GdprCategory = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(t.TrackingServiceClass).GDPR_CATEGORY;
             return trackingCategory === GdprCategory.TECHNICAL_NECESSARY;
@@ -122,6 +204,50 @@ export class GdprDialogComponent implements OnInit {
         }
         else {
             trackingService.enable();
+        }
+    }
+
+    /**
+     * Toggles all enabled by default trackings.
+     */
+    toggleEnabledByDefaultTrackings(): void {
+        if (this.allEnabledByDefaultEnabled) {
+            for (const tracking of this.enabledByDefaultTrackings) {
+                const trackingService: BaseTrackingService<BaseTrackingMetadata> = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
+                    tracking.TrackingServiceClass
+                );
+                trackingService.disable();
+            }
+        }
+        else {
+            for (const tracking of this.enabledByDefaultTrackings) {
+                const trackingService: BaseTrackingService<BaseTrackingMetadata> = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
+                    tracking.TrackingServiceClass
+                );
+                trackingService.enable();
+            }
+        }
+    }
+
+    /**
+     * Toggles all disabled by default trackings.
+     */
+    toggleDisabledByDefaultTrackings(): void {
+        if (this.allDisabledByDefaultEnabled) {
+            for (const tracking of this.disabledByDefaultTrackings) {
+                const trackingService: BaseTrackingService<BaseTrackingMetadata> = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
+                    tracking.TrackingServiceClass
+                );
+                trackingService.disable();
+            }
+        }
+        else {
+            for (const tracking of this.disabledByDefaultTrackings) {
+                const trackingService: BaseTrackingService<BaseTrackingMetadata> = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
+                    tracking.TrackingServiceClass
+                );
+                trackingService.enable();
+            }
         }
     }
 

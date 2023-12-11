@@ -14,8 +14,8 @@ export class AppComponent {
         private readonly gdprService: GdprService
     ) {}
 
-    openGdpr(): void {
-        void this.gdprService.openDialog();
+    async openGdpr(): Promise<void> {
+        await this.gdprService.openDialog();
     }
 
     clearLocalData(): void {

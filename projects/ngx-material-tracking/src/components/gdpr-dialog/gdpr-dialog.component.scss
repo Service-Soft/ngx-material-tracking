@@ -17,7 +17,14 @@ mat-panel-title {
     }
 
     .close-button {
+        display: flex;
+        align-items: center;
+        gap: 5px;
         margin-left: auto;
+
+        i {
+            font-size: 120%;
+        }
     }
 
     .close-button:hover {
@@ -34,10 +41,22 @@ mat-panel-title {
 .dialog-content {
     padding: 12px;
 
-    b {
-        display: block;
+    .category-title {
+        display: flex;
+        align-items: center;
+        height: 24px;
         margin-bottom: 5px;
         margin-top: 24px;
+        gap: 5px;
+
+        mat-checkbox {
+            margin-right: -5px;
+            margin-left: -12px;
+        }
+
+        b:hover {
+            cursor: pointer;
+        }
     }
 }
 

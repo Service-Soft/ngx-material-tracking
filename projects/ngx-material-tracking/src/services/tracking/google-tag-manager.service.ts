@@ -76,9 +76,9 @@ export class GoogleTagManagerService extends BaseTrackingService<BaseTrackingMet
      * @param name - The name of the event to track.
      * @param event - The event data to track.
      */
-    trackEvent(name: string, event: GoogleAnalyticsEvent): void {
+    async trackEvent(name: string, event: GoogleAnalyticsEvent): Promise<void> {
         if (this.metadata.enabled) {
-            void this.pushTag({
+            await this.pushTag({
                 ...event,
                 event: name
             });

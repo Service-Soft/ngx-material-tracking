@@ -2,16 +2,20 @@
     "name": "ngx-material-tracking",
     "version": "0.0.0",
     "scripts": {
-        "start": "ng serve ngx-material-tracking-showcase",
+        "start": "npm run stack",
+        "stack": "concurrently --kill-others 'npm run build:watch' 'run-s waitOn:build showcase'",
+        "showcase": "ng serve ngx-material-tracking-showcase",
         "build": "ng build ngx-material-tracking",
         "build:prod": "run-s build copyToDist",
-        "watch": "ng build ngx-material-tracking --watch --configuration development",
+        "build:watch": "ng build ngx-material-tracking --watch --configuration development",
         "copyToDist": "run-s copyToDist:readme copyToDist:license",
         "copyToDist:readme": "ncp ./README.md ./dist/ngx-material-tracking/README.md",
         "copyToDist:license": "ncp ./LICENSE.md ./dist/ngx-material-tracking/LICENSE.md",
         "test": "ng test",
         "lint": "eslint projects --report-unused-disable-directives --max-warnings 0",
-        "lint:fix": "eslint projects --fix"
+        "lint:fix": "eslint projects --fix",
+        "clear:dist": "rimraf dist/ngx-material-tracking",
+        "waitOn:build": "wait-on dist/ngx-material-tracking"
     },
     "private": true,
     "dependencies": {
@@ -34,6 +38,7 @@
         "@angular/cli": "~16.2.0",
         "@angular/compiler-cli": "~16.2.0",
         "@types/jasmine": "~4.3.5",
+        "concurrently": "^8.2.2",
         "eslint-config-service-soft": "^1.2.2",
         "jasmine-core": "~5.1.0",
         "karma": "~6.4.2",
@@ -44,6 +49,7 @@
         "ncp": "^2.0.0",
         "ng-packagr": "^16.2.0",
         "npm-run-all": "^4.1.5",
-        "typescript": "~5.1.6"
+        "typescript": "~5.1.6",
+        "wait-on": "^7.2.0"
     }
 }

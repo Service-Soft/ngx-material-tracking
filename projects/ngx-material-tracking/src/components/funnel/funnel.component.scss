@@ -1,0 +1,30 @@
+h2 {
+    text-align: center;
+    font-size: 30px;
+}
+
+.funnel-container {
+    width: 100%;
+
+    .funnel-level {
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        box-sizing: border-box;
+        padding: 20px;
+
+        .label {
+            font-weight: bold;
+            line-height: 30px;
+        }
+
+        .value {
+            font-size: 30px;
+            line-height: 30px;
+            font-weight: lighter;
+            width: auto;
+        }
+    }
+}

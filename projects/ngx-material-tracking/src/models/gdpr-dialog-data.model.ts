@@ -72,5 +72,13 @@ export interface GdprDialogData {
      * The imprint route.
      * @default 'imprint'
      */
-    imprintRoute?: string
+    imprintRoute?: string,
+    /**
+     * Whether or not only categories and not the specific tracking services should be shown.
+     */
+    showOnlyCategories?: boolean,
+    /**
+     * Whether or not the categories should be opened when the dialog is opened.
+     */
+    categoriesOpenedByDefault?: boolean
 }
