@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { BaseCustomTrackingMetadata, CustomTrackingService, GdprCategory, TrackingEvent, TrackingVisit } from 'ngx-material-tracking';
 
 @Injectable({ providedIn: 'root' })
-// eslint-disable-next-line jsdoc/require-jsdoc
+
 export class InternalAnalyticsService extends CustomTrackingService<BaseCustomTrackingMetadata, TrackingVisit, TrackingEvent> {
     override readonly DOMAIN: string = 'http://localhost';
     override readonly VISIT_API_URL: string = 'http://localhost:3000/visits';
@@ -19,6 +19,5 @@ export class InternalAnalyticsService extends CustomTrackingService<BaseCustomTr
     override trackVisit(visit: Omit<TrackingVisit, 'domain' | 'firstVisit'>): void {
         // eslint-disable-next-line no-console
         console.log(`Tracks visit for ${visit.targetSite}`);
-        return;
     }
 }

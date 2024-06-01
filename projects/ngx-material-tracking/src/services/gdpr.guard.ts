@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn } from '@angular/router';
+
 import { GdprService, NGX_GDPR_SERVICE } from './gdpr.service';
 
 /**

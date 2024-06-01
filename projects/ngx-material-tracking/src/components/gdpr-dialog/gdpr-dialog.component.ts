@@ -5,6 +5,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+
 import { GdprCategory } from '../../models/gdpr-category.enum';
 import { GdprDialogDataInternal } from '../../models/gdpr-dialog-data-internal.model';
 import { GdprDialogData } from '../../models/gdpr-dialog-data.model';
@@ -143,15 +144,21 @@ export class GdprDialogComponent implements OnInit {
         this.enabledByDefaultOpened = this.gdprDialogData.categoriesOpenedByDefault ? true : false;
         this.disabledByDefaultOpened = this.gdprDialogData.categoriesOpenedByDefault ? true : false;
         this.technicalNecessaryTrackings = this.gdprService.trackings.filter(t => {
-            const trackingCategory: GdprCategory = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(t.TrackingServiceClass).GDPR_CATEGORY;
+            const trackingCategory: GdprCategory = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
+                t.TrackingServiceClass
+            ).GDPR_CATEGORY;
             return trackingCategory === GdprCategory.TECHNICAL_NECESSARY;
         });
         this.enabledByDefaultTrackings = this.gdprService.trackings.filter(t => {
-            const trackingCategory: GdprCategory = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(t.TrackingServiceClass).GDPR_CATEGORY;
+            const trackingCategory: GdprCategory = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
+                t.TrackingServiceClass
+            ).GDPR_CATEGORY;
             return trackingCategory === GdprCategory.ENABLED_BY_DEFAULT;
         });
         this.disabledByDefaultTrackings = this.gdprService.trackings.filter(t => {
-            const trackingCategory: GdprCategory = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(t.TrackingServiceClass).GDPR_CATEGORY;
+            const trackingCategory: GdprCategory = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
+                t.TrackingServiceClass
+            ).GDPR_CATEGORY;
             return trackingCategory === GdprCategory.DISABLED_BY_DEFAULT;
         });
     }
@@ -201,10 +208,9 @@ export class GdprDialogComponent implements OnInit {
         );
         if (trackingService.metadata.enabled) {
             trackingService.disable();
+            return;
         }
-        else {
-            trackingService.enable();
-        }
+        trackingService.enable();
     }
 
     /**
@@ -213,19 +219,19 @@ export class GdprDialogComponent implements OnInit {
     toggleEnabledByDefaultTrackings(): void {
         if (this.allEnabledByDefaultEnabled) {
             for (const tracking of this.enabledByDefaultTrackings) {
+                // eslint-disable-next-line stylistic/max-len
                 const trackingService: BaseTrackingService<BaseTrackingMetadata> = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
                     tracking.TrackingServiceClass
                 );
                 trackingService.disable();
             }
+            return;
         }
-        else {
-            for (const tracking of this.enabledByDefaultTrackings) {
-                const trackingService: BaseTrackingService<BaseTrackingMetadata> = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
-                    tracking.TrackingServiceClass
-                );
-                trackingService.enable();
-            }
+        for (const tracking of this.enabledByDefaultTrackings) {
+            const trackingService: BaseTrackingService<BaseTrackingMetadata> = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
+                tracking.TrackingServiceClass
+            );
+            trackingService.enable();
         }
     }
 
@@ -235,19 +241,19 @@ export class GdprDialogComponent implements OnInit {
     toggleDisabledByDefaultTrackings(): void {
         if (this.allDisabledByDefaultEnabled) {
             for (const tracking of this.disabledByDefaultTrackings) {
+                // eslint-disable-next-line stylistic/max-len
                 const trackingService: BaseTrackingService<BaseTrackingMetadata> = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
                     tracking.TrackingServiceClass
                 );
                 trackingService.disable();
             }
+            return;
         }
-        else {
-            for (const tracking of this.disabledByDefaultTrackings) {
-                const trackingService: BaseTrackingService<BaseTrackingMetadata> = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
-                    tracking.TrackingServiceClass
-                );
-                trackingService.enable();
-            }
+        for (const tracking of this.disabledByDefaultTrackings) {
+            const trackingService: BaseTrackingService<BaseTrackingMetadata> = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
+                tracking.TrackingServiceClass
+            );
+            trackingService.enable();
         }
     }
 

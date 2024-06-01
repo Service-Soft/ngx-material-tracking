@@ -2,13 +2,15 @@
 <h2>{{title}}</h2>
 
 <div class="funnel-container">
-    <div *ngFor="let funnelPoint of funnelPoints; let i = index;"
-        class="funnel-level"
-        [style.background-color]="colors[i]"
-        [style.width]="getWidthForFunnelPoint(funnelPoint) * 100 + '%'"
-        [style.clip-path]="getClipPathForFunnelPoint(funnelPoint, i)"
-    >
-        <span class="label">{{funnelPoint.name}} ({{getWidthForFunnelPoint(funnelPoint) | percent}})</span>
-        <div class="value">{{funnelPoint.value}}</div>
-    </div>
+    @for (funnelPoint of funnelPoints; track $index) {
+        <div
+            class="funnel-level"
+            [style.background-color]="colors[$index]"
+            [style.width]="getWidthForFunnelPoint(funnelPoint) * 100 + '%'"
+            [style.clip-path]="getClipPathForFunnelPoint(funnelPoint, $index)"
+        >
+            <span class="label">{{funnelPoint.name}} ({{getWidthForFunnelPoint(funnelPoint) | percent}})</span>
+            <div class="value">{{funnelPoint.value}}</div>
+        </div>
+    }
 </div>

@@ -1,9 +1,10 @@
 import { Injectable, InjectionToken, inject } from '@angular/core';
 import { Router } from '@angular/router';
+
+import { BaseTrackingMetadata, BaseTrackingService } from './base-tracking.service';
 import { GdprCategory } from '../../models/gdpr-category.enum';
 import { GoogleAnalyticsEvent } from '../../models/google-analytics-event.model';
 import { ScriptService } from '../script.service';
-import { BaseTrackingMetadata, BaseTrackingService } from './base-tracking.service';
 
 /**
  * Provider for the id used for google analytics.
@@ -15,6 +16,7 @@ export const NGX_GOOGLE_TAG_MANAGER_ID: InjectionToken<string> = new InjectionTo
         factory: (() => {
             // eslint-disable-next-line no-console
             console.error(
+                // eslint-disable-next-line stylistic/max-len
                 'No google tag manager id has been provided for the token NGX_GOOGLE_TAG_MANAGER_ID\nAdd this to your app.module.ts provider array:\n{\n    provide: NGX_GOOGLE_TAG_MANAGER_ID,\n    useValue: \'myTagManagerId\'\n}'
             );
         }) as () => string
@@ -92,10 +94,12 @@ export class GoogleTagManagerService extends BaseTrackingService<BaseTrackingMet
     private async pushTag(item: object): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             this.loadGTMScript()
+                // eslint-disable-next-line promise/prefer-await-to-then
                 .then(() => {
                     this.pushOnDataLayer(item);
                     resolve();
                 })
+                // eslint-disable-next-line promise/prefer-await-to-then, promise/prefer-await-to-callbacks
                 .catch(error => reject(error));
         });
     }
@@ -125,7 +129,7 @@ export class GoogleTagManagerService extends BaseTrackingService<BaseTrackingMet
         }
 
         this.pushOnDataLayer({
-            'gtm.start': new Date().getTime(),
+            'gtm.start': Date.now(),
             event: 'gtm.js'
         });
 

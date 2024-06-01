@@ -2,26 +2,26 @@
  * The options for a cookie.
  */
 export interface CookieOptions {
-  /**
-   * After how many days the cookie will expire.
-   */
-  expireDays?: number,
-  /**
-   * The path of the cookie.
-   */
-  path?: string,
-  /**
-   * The domain of the cookie.
-   */
-  domain?: string,
-  /**
-   * Whether this cookie is secure (sent over https).
-   */
-  secure?: boolean,
-  /**
-   * How tje "sameSite" attribute for the cookie is handled.
-   */
-  sameSite?: 'Lax' | 'None' | 'Strict'
+    /**
+     * After how many days the cookie will expire.
+     */
+    expireDays?: number,
+    /**
+     * The path of the cookie.
+     */
+    path?: string,
+    /**
+     * The domain of the cookie.
+     */
+    domain?: string,
+    /**
+     * Whether this cookie is secure (sent over https).
+     */
+    secure?: boolean,
+    /**
+     * How tje "sameSite" attribute for the cookie is handled.
+     */
+    sameSite?: 'Lax' | 'None' | 'Strict'
 }
 
 /**
@@ -36,17 +36,19 @@ export abstract class CookieUtilities {
      * @returns The value of the cookie.
      */
     static get(name: string): string | null {
-        if (document == null) {
+        if (document == undefined) {
+            // eslint-disable-next-line unicorn/no-null
             return null;
         }
         name = encodeURIComponent(name);
         const regExp: RegExp = CookieUtilities.getCookieRegExp(name);
         const result: RegExpExecArray | null = regExp.exec(document?.cookie ?? '');
+        // eslint-disable-next-line unicorn/no-null
         return result?.[1] ? CookieUtilities.safeDecodeURIComponent(result[1]) : null;
     }
 
     private static getCookieRegExp(name: string): RegExp {
-        const escapedName: string = name.replace(/([\[\]\{\}\(\)\|\=\;\+\?\,\.\*\^\$])/gi, '\\$1');
+        const escapedName: string = name.replaceAll(/([$()*+,.;=?[\]^{|}])/gi, '\\$1');
         return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g');
     }
 
@@ -72,11 +74,13 @@ export abstract class CookieUtilities {
      * @param options - Any additional options for the cookie.
      */
     static set(name: string, value: string, options: CookieOptions = {}): void {
-        if (document == null) {
+        if (document == undefined) {
             return;
         }
         let cookieString: string = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';';
-        cookieString += options.expireDays ? `expires=${new Date(new Date().getTime() + options.expireDays * 1000 * 60 * 60 * 24).toUTCString()};` : '';
+        cookieString += options.expireDays
+            ? `expires=${new Date(Date.now() + (options.expireDays * 1000 * 60 * 60 * 24)).toUTCString()};`
+            : '';
         cookieString += options.path ? `path=${options.path};` : '';
         cookieString += options.domain ? `domain=${options.domain};` : '';
         cookieString += options.secure === true ? 'secure;' : '';
@@ -112,15 +116,15 @@ export abstract class CookieUtilities {
      * @returns All the cookies in json.
      */
     private static getAll(): Record<string, string> {
-        if (document == null) {
+        if (document == undefined) {
             return {};
         }
         const cookies: Record<string, string> = {};
         if (document?.cookie && document?.cookie !== '') {
-            document?.cookie.split(';').forEach(c => {
+            for (const c of document?.cookie.split(';')) {
                 const [cName, cValue] = c.split('=');
                 cookies[CookieUtilities.safeDecodeURIComponent(cName.replace(/^ /, ''))] = CookieUtilities.safeDecodeURIComponent(cValue);
-            });
+            }
         }
 
         return cookies;

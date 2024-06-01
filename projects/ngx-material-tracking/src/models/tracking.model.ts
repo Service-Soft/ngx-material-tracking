@@ -1,14 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BaseTrackingMetadata, BaseTrackingService } from '../services/tracking/base-tracking.service';
-import { BaseCustomTrackingMetadata, CustomTrackingService } from '../services/tracking/custom-tracking.service';
+
 import { TrackingEvent } from './event.model';
 import { TrackingVisit } from './visit.model';
+import { BaseTrackingMetadata, BaseTrackingService } from '../services/tracking/base-tracking.service';
+import { BaseCustomTrackingMetadata, CustomTrackingService } from '../services/tracking/custom-tracking.service';
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 type BaseTrackingServiceClassType<
     TrackingMetadata extends BaseTrackingMetadata
-> = new (router: Router, metadataDefaultValue?: Omit<TrackingMetadata, 'createdAt'>) => BaseTrackingService<TrackingMetadata>
+> = new (router: Router, metadataDefaultValue?: Omit<TrackingMetadata, 'createdAt'>) => BaseTrackingService<TrackingMetadata>;
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 type CustomBaseTrackingServiceClassType<
@@ -45,5 +46,6 @@ export interface Tracking<
     /**
      * The service that is handling the tracking.
      */
-    TrackingServiceClass: BaseTrackingServiceClassType<TrackingMetadata> | CustomBaseTrackingServiceClassType<CustomTrackingMetadata, TrackingVisitType, TrackingEventType>
+    TrackingServiceClass: BaseTrackingServiceClassType<TrackingMetadata>
+    | CustomBaseTrackingServiceClassType<CustomTrackingMetadata, TrackingVisitType, TrackingEventType>
 }

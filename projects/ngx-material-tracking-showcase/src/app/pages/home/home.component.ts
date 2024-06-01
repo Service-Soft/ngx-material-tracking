@@ -7,9 +7,7 @@ import { FunnelComponent, FunnelPoint } from 'ngx-material-tracking';
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
     standalone: true,
-    imports: [
-        FunnelComponent
-    ]
+    imports: [FunnelComponent]
 })
 export class HomeComponent {
     funnelPoints: FunnelPoint[] = [

@@ -24,6 +24,7 @@ export class ScriptService {
         @Inject(DOCUMENT)
         private readonly document: Document
     ) {
+        // eslint-disable-next-line unicorn/no-null
         this.renderer = this.rendererFactory.createRenderer(null, null);
         this.init();
     }
@@ -68,6 +69,7 @@ export class ScriptService {
             script.async = true;
             if (src) {
                 script.addEventListener('load', () => resolve());
+                // eslint-disable-next-line promise/prefer-await-to-callbacks
                 script.addEventListener('error', error => reject(error));
             }
             this.renderer.appendChild(this.document[location], script);
@@ -99,6 +101,7 @@ export class ScriptService {
             script.async = true;
             if (src) {
                 script.addEventListener('load', () => resolve());
+                // eslint-disable-next-line promise/prefer-await-to-callbacks
                 script.addEventListener('error', error => reject(error));
             }
             this.renderer.appendChild(this.document[location], script);
@@ -143,7 +146,9 @@ export class ScriptService {
             return;
         }
 
-        const temporaryScriptElements: HTMLCollectionOf<Element> = this.document.getElementsByClassName(ScriptService.TEMPORARY_SCRIPT_CLASS_NAME);
+        const temporaryScriptElements: HTMLCollectionOf<Element> = this.document.getElementsByClassName(
+            ScriptService.TEMPORARY_SCRIPT_CLASS_NAME
+        );
         for (const element of Array.from(temporaryScriptElements)) {
             try {
                 this.renderer.removeChild(this.document.body, element);

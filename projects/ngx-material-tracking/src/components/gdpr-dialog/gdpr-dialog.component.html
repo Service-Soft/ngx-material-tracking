@@ -1,76 +1,102 @@
-<!-- eslint-disable angular/cyclomatic-complexity -->
 <div class="dialog-title" mat-dialog-title>
     <h1>{{gdprDialogData.title}}</h1>
-    <a *ngIf="gdprDialogData.displayCloseAllowsAll" class="close-button" (click)="allowAll()">{{gdprDialogData.allowAllButtonLabel}} <i class="fas fa-close"></i></a>
+    @if (gdprDialogData.displayCloseAllowsAll) {
+        <a class="close-button" (click)="allowAll()">{{gdprDialogData.allowAllButtonLabel}} <i class="fas fa-close"></i></a>
+    }
 </div>
 <div class="dialog-content" mat-dialog-content>
     <div [innerHTML]="gdprDialogData.text">
     </div>
 
-    <div *ngIf="technicalNecessaryTrackings.length" class="category-title">
-        <mat-checkbox checked disabled></mat-checkbox>
-        <b (click)="technicalNecessaryOpened = !technicalNecessaryOpened">
-            {{gdprDialogData.technicalNecessaryTitle}}
-            <i *ngIf="!gdprDialogData.showOnlyCategories" class="fas" [class.fa-chevron-down]="!technicalNecessaryOpened" [class.fa-chevron-up]="technicalNecessaryOpened"></i>
-        </b>
-    </div>
-    <mat-accordion *ngIf="technicalNecessaryTrackings.length  && technicalNecessaryOpened && !gdprDialogData.showOnlyCategories" displayMode="flat">
-        <mat-expansion-panel *ngFor="let tracking of technicalNecessaryTrackings">
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    {{tracking.name}}
-                    <mat-slide-toggle checked disabled></mat-slide-toggle>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <div *ngFor="let paragraph of tracking.description">
-                {{paragraph}}
-            </div>
-        </mat-expansion-panel>
-    </mat-accordion>
+    @if (technicalNecessaryTrackings.length) {
+        <div class="category-title">
+            <mat-checkbox checked disabled></mat-checkbox>
+            <b (click)="technicalNecessaryOpened = !technicalNecessaryOpened">
+                {{gdprDialogData.technicalNecessaryTitle}}
+                @if (!gdprDialogData.showOnlyCategories) {
+                    <i class="fas" [class.fa-chevron-down]="!technicalNecessaryOpened" [class.fa-chevron-up]="technicalNecessaryOpened"></i>
+                }
+            </b>
+        </div>
+        @if (technicalNecessaryOpened && !gdprDialogData.showOnlyCategories) {
+            <mat-accordion displayMode="flat">
+                @for (tracking of technicalNecessaryTrackings; track $index) {
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{tracking.name}}
+                                <mat-slide-toggle checked disabled></mat-slide-toggle>
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        @for (paragraph of tracking.description; track $index) {
+                           <div>{{paragraph}}</div>
+                        }
+                    </mat-expansion-panel>
+                }
+            </mat-accordion>
+        }
+    }
 
-    <div *ngIf="enabledByDefaultTrackings.length" class="category-title">
-        <mat-checkbox [checked]="allEnabledByDefaultEnabled" [indeterminate]="someEnabledByDefaultEnabled" (change)="toggleEnabledByDefaultTrackings()"></mat-checkbox>
-        <b (click)="enabledByDefaultOpened = !enabledByDefaultOpened">
-            {{gdprDialogData.enabledByDefaultTitle}}
-            <i *ngIf="!gdprDialogData.showOnlyCategories" class="fas" [class.fa-chevron-down]="!enabledByDefaultOpened" [class.fa-chevron-up]="enabledByDefaultOpened"></i>
-        </b>
-    </div>
-    <mat-accordion *ngIf="enabledByDefaultTrackings.length && enabledByDefaultOpened && !gdprDialogData.showOnlyCategories" displayMode="flat">
-        <mat-expansion-panel *ngFor="let tracking of enabledByDefaultTrackings">
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    {{tracking.name}}
-                    <!-- eslint-disable-next-line angular/no-call-expression -->
-                    <mat-slide-toggle [checked]="isTrackingEnabled(tracking)" (click)="$event.stopPropagation()" (change)="toggleTracking(tracking)"></mat-slide-toggle>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <div *ngFor="let paragraph of tracking.description">
-                {{paragraph}}
-            </div>
-        </mat-expansion-panel>
-    </mat-accordion>
+    @if (enabledByDefaultTrackings.length) {
+        <div class="category-title">
+            <mat-checkbox [checked]="allEnabledByDefaultEnabled" [indeterminate]="someEnabledByDefaultEnabled" (change)="toggleEnabledByDefaultTrackings()"></mat-checkbox>
+            <b (click)="enabledByDefaultOpened = !enabledByDefaultOpened">
+                {{gdprDialogData.enabledByDefaultTitle}}
+                @if (!gdprDialogData.showOnlyCategories) {
+                    <i class="fas" [class.fa-chevron-down]="!enabledByDefaultOpened" [class.fa-chevron-up]="enabledByDefaultOpened"></i>
+                }
+            </b>
+        </div>
+        @if (enabledByDefaultOpened && !gdprDialogData.showOnlyCategories) {
+            <mat-accordion displayMode="flat">
+                @for (tracking of enabledByDefaultTrackings; track $index) {
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{tracking.name}}
+                                <!-- eslint-disable-next-line angular/no-call-expression -->
+                                <mat-slide-toggle [checked]="isTrackingEnabled(tracking)" (click)="$event.stopPropagation()" (change)="toggleTracking(tracking)"></mat-slide-toggle>
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        @for (paragraph of tracking.description; track $index) {
+                            <div>{{paragraph}}</div>
+                        }
+                    </mat-expansion-panel>
+                }
+            </mat-accordion>
+        }
+    }
 
-    <div *ngIf="disabledByDefaultTrackings.length" class="category-title">
-        <mat-checkbox [checked]="allDisabledByDefaultEnabled" [indeterminate]="someDisabledByDefaultEnabled" (change)="toggleDisabledByDefaultTrackings()"></mat-checkbox>
-        <b (click)="disabledByDefaultOpened = !disabledByDefaultOpened">
-            {{gdprDialogData.disabledByDefaultTitle}}
-            <i *ngIf="!gdprDialogData.showOnlyCategories" class="fas" [class.fa-chevron-down]="!disabledByDefaultOpened" [class.fa-chevron-up]="disabledByDefaultOpened"></i>
-        </b>
-    </div>
-    <mat-accordion *ngIf="disabledByDefaultTrackings.length && disabledByDefaultOpened && !gdprDialogData.showOnlyCategories" displayMode="flat">
-        <mat-expansion-panel *ngFor="let tracking of disabledByDefaultTrackings">
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    {{tracking.name}}
-                    <!-- eslint-disable-next-line angular/no-call-expression -->
-                    <mat-slide-toggle [checked]="isTrackingEnabled(tracking)" (click)="$event.stopPropagation()" (change)="toggleTracking(tracking)"></mat-slide-toggle>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <div *ngFor="let paragraph of tracking.description">
-                {{paragraph}}
-            </div>
-        </mat-expansion-panel>
-    </mat-accordion>
+    @if (disabledByDefaultTrackings.length) {
+        <div class="category-title">
+            <mat-checkbox [checked]="allDisabledByDefaultEnabled" [indeterminate]="someDisabledByDefaultEnabled" (change)="toggleDisabledByDefaultTrackings()"></mat-checkbox>
+            <b (click)="disabledByDefaultOpened = !disabledByDefaultOpened">
+                {{gdprDialogData.disabledByDefaultTitle}}
+                @if (!gdprDialogData.showOnlyCategories) {
+                    <i class="fas" [class.fa-chevron-down]="!disabledByDefaultOpened" [class.fa-chevron-up]="disabledByDefaultOpened"></i>
+                }
+            </b>
+        </div>
+        @if (disabledByDefaultOpened && !gdprDialogData.showOnlyCategories) {
+            <mat-accordion displayMode="flat">
+                @for (tracking of disabledByDefaultTrackings; track $index) {
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{tracking.name}}
+                                <!-- eslint-disable-next-line angular/no-call-expression -->
+                                <mat-slide-toggle [checked]="isTrackingEnabled(tracking)" (click)="$event.stopPropagation()" (change)="toggleTracking(tracking)"></mat-slide-toggle>
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        @for (paragraph of tracking.description; track $index) {
+                            <div>{{paragraph}}</div>
+                        }
+                    </mat-expansion-panel>
+                }
+            </mat-accordion>
+        }
+    }
+    
 </div>
 <div class="dialog-actions" mat-dialog-actions>
     <button type="button" class="allow-all-button" mat-raised-button (click)="allowAll()">{{gdprDialogData.allowAllButtonLabel}}</button>

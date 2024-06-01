@@ -1,3 +1,4 @@
+/* eslint-disable stylistic/max-len */
 /* eslint-disable jsdoc/require-jsdoc */
 import { GdprDialogData } from './gdpr-dialog-data.model';
 

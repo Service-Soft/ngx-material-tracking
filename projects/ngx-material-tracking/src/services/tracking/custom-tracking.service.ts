@@ -3,10 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { PLATFORM_ID, inject } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
+
+import { BaseTrackingMetadata, BaseTrackingService } from './base-tracking.service';
 import { TrackingEvent } from '../../models/event.model';
 import { TrackingVisit } from '../../models/visit.model';
 import { cookieStorage } from '../../utilities/cookie-storage.utilities';
-import { BaseTrackingMetadata, BaseTrackingService } from './base-tracking.service';
 
 /**
  * The base tracking metadata type for custom tracking services.
@@ -59,7 +60,7 @@ export abstract class CustomTrackingService<
      * Whether or not the visitor has already been on this website.
      */
     get firstVisit(): boolean {
-        if (this.metadata.firstVisit == null) {
+        if (this.metadata.firstVisit == undefined) {
             this.metadata = { ...this.metadata, firstVisit: new Date() };
             return true;
         }
@@ -81,7 +82,6 @@ export abstract class CustomTrackingService<
         this.platformId = inject(PLATFORM_ID);
     }
 
-
     protected override getMetadataFromCookie(): TrackingMetadata {
         const res: TrackingMetadata = super.getMetadataFromCookie();
         const firstVisitInMs: number = new Date(res.firstVisit).getTime();
@@ -90,7 +90,6 @@ export abstract class CustomTrackingService<
         }
         return JSON.parse(cookieStorage.getItem(this.METADATA_KEY) as string) as TrackingMetadata;
     }
-
 
     protected override getMetadataFromLocalStorage(): TrackingMetadata {
         const res: TrackingMetadata = super.getMetadataFromLocalStorage();
@@ -101,7 +100,6 @@ export abstract class CustomTrackingService<
         return JSON.parse(localStorage.getItem(this.METADATA_KEY) as string) as TrackingMetadata;
     }
 
-
     protected override getMetadataFromSessionStorage(): TrackingMetadata {
         const res: TrackingMetadata = super.getMetadataFromSessionStorage();
         const firstVisitInMs: number = new Date(res.firstVisit).getTime();
@@ -110,7 +108,6 @@ export abstract class CustomTrackingService<
         }
         return JSON.parse(sessionStorage.getItem(this.METADATA_KEY) as string) as TrackingMetadata;
     }
-
 
     override onNavigationEnd(event: NavigationEnd): void {
         if (!isPlatformBrowser(this.platformId)) {
@@ -152,8 +149,8 @@ export abstract class CustomTrackingService<
                 domain: this.DOMAIN,
                 firstVisit: this.firstVisit
             };
-            // eslint-disable-next-line no-console
-            void firstValueFrom(this.http.post(this.VISIT_API_URL, reqBody)).catch(e => console.error(e));
+            // eslint-disable-next-line no-console, promise/prefer-await-to-then, promise/prefer-await-to-callbacks
+            void firstValueFrom(this.http.post(this.VISIT_API_URL, reqBody)).catch(error => console.error(error));
         }
     }
 
@@ -162,13 +159,14 @@ export abstract class CustomTrackingService<
      * @param event - Data about the event.
      */
     trackEvent(event: Omit<TrackingEventType, 'domain'>): void {
-        if (this.metadata.enabled) {
-            const reqBody: TrackingEventType = {
-                ...event,
-                domain: this.DOMAIN
-            } as TrackingEventType;
-            // eslint-disable-next-line no-console
-            void firstValueFrom(this.http.post(this.EVENT_API_URL, reqBody)).catch(e => console.error(e));
+        if (!this.metadata.enabled) {
+            return;
         }
+        const reqBody: TrackingEventType = {
+            ...event,
+            domain: this.DOMAIN
+        } as TrackingEventType;
+        // eslint-disable-next-line no-console, promise/prefer-await-to-then, promise/prefer-await-to-callbacks
+        void firstValueFrom(this.http.post(this.EVENT_API_URL, reqBody)).catch(error => console.error(error));
     }
 }

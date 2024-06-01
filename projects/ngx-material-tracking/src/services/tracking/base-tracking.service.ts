@@ -1,4 +1,5 @@
 import { NavigationEnd, Router } from '@angular/router';
+
 import { GdprCategory } from '../../models/gdpr-category.enum';
 import { cookieStorage } from '../../utilities/cookie-storage.utilities';
 
@@ -52,7 +53,6 @@ export abstract class BaseTrackingService<TrackingMetadata extends BaseTrackingM
                 return this.getMetadataFromCookie();
         }
     }
-
 
     /**
      * Any locally stored data of this tracking service.

@@ -1,25 +1,18 @@
-/* tslint:disable:no-unused-variable */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FunnelComponent } from './funnel.component';
 
 describe('FunnelComponent', () => {
-    let component: FunnelComponent;
     let fixture: ComponentFixture<FunnelComponent>;
-
-    beforeEach(async(() => {
-        void TestBed.configureTestingModule({
-            declarations: [FunnelComponent]
-        }).compileComponents();
-    }));
+    let component: FunnelComponent;
 
     beforeEach(() => {
         fixture = TestBed.createComponent(FunnelComponent);
         component = fixture.componentInstance;
-        fixture.detectChanges();
+        fixture.autoDetectChanges();
     });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
+    it('should create the component', () => {
+        expect(component).toBeDefined();
     });
 });

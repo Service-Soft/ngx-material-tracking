@@ -64,6 +64,9 @@ export const cookieStorage: CookieStorage = {
     },
 
     key(index: number): string | null {
-        return document?.cookie ? document.cookie.split(';')[index].replace(/^\s+/g, '').split('=')[0] : null;
+        return document?.cookie
+            ? document.cookie.split(';')[index].replaceAll(/^\s+/g, '').split('=')[0]
+            // eslint-disable-next-line unicorn/no-null
+            : null;
     }
 };

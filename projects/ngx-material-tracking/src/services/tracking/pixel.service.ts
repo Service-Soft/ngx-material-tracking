@@ -1,9 +1,10 @@
 import { inject, Injectable, InjectionToken } from '@angular/core';
 import { Router } from '@angular/router';
+
+import { BaseTrackingMetadata, BaseTrackingService } from './base-tracking.service';
 import { GdprCategory } from '../../models/gdpr-category.enum';
 import { PixelEventName, PixelEventProperties } from '../../models/meta-pixel.model';
 import { ScriptService } from '../script.service';
-import { BaseTrackingMetadata, BaseTrackingService } from './base-tracking.service';
 
 /**
  * Provider for the id used for the pixel.
@@ -15,6 +16,7 @@ export const NGX_PIXEL_ID: InjectionToken<string> = new InjectionToken<string>(
         factory: (() => {
             // eslint-disable-next-line no-console
             console.error(
+                // eslint-disable-next-line stylistic/max-len
                 'No pixel id has been provided for the token NGX_PIXEL_ID\nAdd this to your app.module.ts provider array:\n{\n    provide: NGX_PIXEL_ID,\n    useValue: \'myPixelId\'\n}'
             );
         }) as () => string
@@ -47,7 +49,6 @@ export class PixelService extends BaseTrackingService<BaseTrackingMetadata> {
         this.PIXEL_ID = inject(NGX_PIXEL_ID);
         this.scriptService = inject(ScriptService);
     }
-
 
     override async enable(): Promise<void> {
         super.enable();
@@ -103,20 +104,25 @@ export class PixelService extends BaseTrackingService<BaseTrackingMetadata> {
      * @param eventName - The name of the event.
      * @param properties - Any additional properties that should be added to the event.
      */
-    async trackEvent(method: 'track' | 'trackCustom', eventName: PixelEventName | string, properties?: PixelEventProperties): Promise<void> {
+    async trackEvent(
+        method: 'track' | 'trackCustom',
+        eventName: PixelEventName | string,
+        properties?: PixelEventProperties
+    ): Promise<void> {
         return new Promise((resolve, reject) => {
-            if (!this.isLoaded) {
-                this.loadPixelScript()
-                    .then(() => {
-                        fbq(method, eventName, properties);
-                        resolve();
-                    })
-                    .catch(error => reject(error));
-            }
-            else {
+            if (this.isLoaded) {
                 fbq(method, eventName, properties);
                 resolve();
+                return;
             }
+            this.loadPixelScript()
+                // eslint-disable-next-line promise/prefer-await-to-then
+                .then(() => {
+                    fbq(method, eventName, properties);
+                    resolve();
+                })
+                // eslint-disable-next-line promise/prefer-await-to-then, promise/prefer-await-to-callbacks
+                .catch(error => reject(error));
         });
     }
 }

@@ -5,6 +5,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+
 import { FunnelPoint } from '../../models/funnel-point.model';
 
 /**
@@ -40,9 +41,7 @@ export class FunnelComponent {
      * @default 5 blue colors.
      */
     @Input()
-    colors: string[] = [
-        '#00b4d8', '#1c99c5', '#388eb3', '#5473a1', '#0e456f'
-    ];
+    colors: string[] = ['#00b4d8', '#1c99c5', '#388eb3', '#5473a1', '#0e456f'];
 
     /**
      * The funnel points to display.
@@ -83,7 +82,7 @@ export class FunnelComponent {
         const difference: number = ((currentFunnelPointWidth - nextFunnelPointWidth) / currentFunnelPointWidth) * 100;
 
         const valueRight: number = 100 - (difference / 2);
-        const valueLeft: number = (difference / 2);
+        const valueLeft: number = difference / 2;
         return `polygon(0 0, 100% 0, ${valueRight}% 100%, ${valueLeft}% 100%)`;
     }
 }

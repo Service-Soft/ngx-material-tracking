@@ -1,9 +1,10 @@
 import { inject, Injectable, InjectionToken } from '@angular/core';
 import { Router } from '@angular/router';
+
+import { BaseTrackingMetadata, BaseTrackingService } from './base-tracking.service';
 import { GdprCategory } from '../../models/gdpr-category.enum';
 import { GoogleAnalyticsEvent } from '../../models/google-analytics-event.model';
 import { ScriptService } from '../script.service';
-import { BaseTrackingMetadata, BaseTrackingService } from './base-tracking.service';
 
 /**
  * Provider for the id used for google analytics.
@@ -15,6 +16,7 @@ export const NGX_GOOGLE_ANALYTICS_ID: InjectionToken<string> = new InjectionToke
         factory: (() => {
             // eslint-disable-next-line no-console
             console.error(
+                // eslint-disable-next-line stylistic/max-len
                 'No google analytics id has been provided for the token NGX_GOOGLE_ANALYTICS_ID\nAdd this to your app.module.ts provider array:\n{\n    provide: NGX_GOOGLE_ANALYTICS_ID,\n    useValue: \'myAnalyticsId\'\n}'
             );
         }) as () => string
@@ -112,13 +114,15 @@ export class GoogleAnalyticsService extends BaseTrackingService<BaseTrackingMeta
         }
         return new Promise<void>((resolve, reject) => {
             this.loadScripts()
+                // eslint-disable-next-line promise/prefer-await-to-then
                 .then(() => {
                     gtag('config', this.ANALYTICS_ID, {
-                        'anonymize_ip': this.ANONYMIZE_IP,
-                        'page_path': window.location.href
+                        anonymize_ip: this.ANONYMIZE_IP,
+                        page_path: window.location.href
                     });
                     resolve();
                 })
+                // eslint-disable-next-line promise/prefer-await-to-then, promise/prefer-await-to-callbacks
                 .catch(error => reject(error));
         });
     }
@@ -139,8 +143,8 @@ export class GoogleAnalyticsService extends BaseTrackingService<BaseTrackingMeta
         if (this.metadata.enabled) {
             gtag('event', name, {
                 ...event,
-                'send_to': this.ANALYTICS_ID,
-                'anonymize_ip': this.ANONYMIZE_IP
+                send_to: this.ANALYTICS_ID,
+                anonymize_ip: this.ANONYMIZE_IP
             });
         }
     }
