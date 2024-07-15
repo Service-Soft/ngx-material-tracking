@@ -1,4 +1,4 @@
-import { inject, Injectable, InjectionToken } from '@angular/core';
+import { inject, Injectable, InjectionToken, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { BaseTrackingMetadata, BaseTrackingService } from './base-tracking.service';
@@ -45,7 +45,7 @@ export class PixelService extends BaseTrackingService<BaseTrackingMetadata> {
     private isLoaded: boolean = false;
 
     constructor(router: Router) {
-        super(router, { enabled: false });
+        super(router, { enabled: false }, inject(PLATFORM_ID));
         this.PIXEL_ID = inject(NGX_PIXEL_ID);
         this.scriptService = inject(ScriptService);
     }

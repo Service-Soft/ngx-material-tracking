@@ -42,7 +42,7 @@ export abstract class CookieUtilities {
         }
         name = encodeURIComponent(name);
         const regExp: RegExp = CookieUtilities.getCookieRegExp(name);
-        const result: RegExpExecArray | null = regExp.exec(document?.cookie ?? '');
+        const result: RegExpExecArray | null = regExp.exec(document.cookie ?? '');
         // eslint-disable-next-line unicorn/no-null
         return result?.[1] ? CookieUtilities.safeDecodeURIComponent(result[1]) : null;
     }
@@ -120,8 +120,8 @@ export abstract class CookieUtilities {
             return {};
         }
         const cookies: Record<string, string> = {};
-        if (document?.cookie && document?.cookie !== '') {
-            for (const c of document?.cookie.split(';')) {
+        if (document?.cookie) {
+            for (const c of document.cookie.split(';')) {
                 const [cName, cValue] = c.split('=');
                 cookies[CookieUtilities.safeDecodeURIComponent(cName.replace(/^ /, ''))] = CookieUtilities.safeDecodeURIComponent(cValue);
             }

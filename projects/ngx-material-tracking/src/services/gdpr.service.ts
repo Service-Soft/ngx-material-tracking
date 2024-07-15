@@ -1,4 +1,5 @@
-import { inject, Inject, Injectable, InjectionToken, Injector } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { inject, Inject, Injectable, InjectionToken, Injector, PLATFORM_ID } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -97,6 +98,10 @@ export class GdprService {
      * Whether the user has already saved his preferences inside the gdpr dialog.
      */
     get hasMadeGdprChoices(): boolean {
+        if (!isPlatformBrowser(this.platformId)) {
+            return true;
+        }
+
         const localData: string | null = localStorage.getItem(this.HAS_MADE_GDPR_CHOICES_KEY);
         if (localData == undefined) {
             if (this.dntEnabled) {
@@ -123,7 +128,7 @@ export class GdprService {
     }
 
     set hasMadeGdprChoices(value: boolean) {
-        if (value) {
+        if (value && isPlatformBrowser(this.platformId)) {
             localStorage.setItem(this.HAS_MADE_GDPR_CHOICES_KEY, JSON.stringify({ createdAt: new Date() }));
         }
     }
@@ -145,7 +150,9 @@ export class GdprService {
         private readonly dialogData: GdprDialogData,
         @Inject(NGX_GDPR_DNT_SETTINGS)
         private readonly dntSettings: DntSettings,
-        private readonly snackbar: MatSnackBar
+        private readonly snackbar: MatSnackBar,
+        @Inject(PLATFORM_ID)
+        private readonly platformId: Object
     ) { }
 
     /**

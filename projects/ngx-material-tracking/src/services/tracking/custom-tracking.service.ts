@@ -53,8 +53,6 @@ export abstract class CustomTrackingService<
      */
     readonly FIRST_VISIT_DURATION_IN_MS: number = 2629746000;
 
-    private readonly platformId: Object;
-
     // eslint-disable-next-line jsdoc/require-returns
     /**
      * Whether or not the visitor has already been on this website.
@@ -78,8 +76,7 @@ export abstract class CustomTrackingService<
         private readonly http: HttpClient,
         metadataDefaultValue: Omit<TrackingMetadata, 'createdAt' | 'firstVisit'>
     ) {
-        super(router, metadataDefaultValue as Omit<TrackingMetadata, 'createdAt'>);
-        this.platformId = inject(PLATFORM_ID);
+        super(router, metadataDefaultValue as Omit<TrackingMetadata, 'createdAt'>, inject(PLATFORM_ID));
     }
 
     protected override getMetadataFromCookie(): TrackingMetadata {
@@ -97,6 +94,9 @@ export abstract class CustomTrackingService<
         if ((Date.now() - firstVisitInMs) > this.FIRST_VISIT_DURATION_IN_MS) {
             this.metadata = { ...res, firstVisit: new Date() };
         }
+        if (!isPlatformBrowser(this.platformId)) {
+            return this.metadata;
+        }
         return JSON.parse(localStorage.getItem(this.METADATA_KEY) as string) as TrackingMetadata;
     }
 
@@ -105,6 +105,9 @@ export abstract class CustomTrackingService<
         const firstVisitInMs: number = new Date(res.firstVisit).getTime();
         if ((Date.now() - firstVisitInMs) > this.FIRST_VISIT_DURATION_IN_MS) {
             this.metadata = { ...res, firstVisit: new Date() };
+        }
+        if (!isPlatformBrowser(this.platformId)) {
+            return this.metadata;
         }
         return JSON.parse(sessionStorage.getItem(this.METADATA_KEY) as string) as TrackingMetadata;
     }

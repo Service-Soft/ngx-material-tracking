@@ -1,4 +1,4 @@
-import { Injectable, InjectionToken, inject } from '@angular/core';
+import { Injectable, InjectionToken, PLATFORM_ID, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { BaseTrackingMetadata, BaseTrackingService } from './base-tracking.service';
@@ -48,7 +48,7 @@ export class GoogleTagManagerService extends BaseTrackingService<BaseTrackingMet
     private readonly scriptService: ScriptService;
 
     constructor(router: Router) {
-        super(router, { enabled: false });
+        super(router, { enabled: false }, inject(PLATFORM_ID));
         this.GTM_ID = inject(NGX_GOOGLE_TAG_MANAGER_ID);
         this.scriptService = inject(ScriptService);
     }

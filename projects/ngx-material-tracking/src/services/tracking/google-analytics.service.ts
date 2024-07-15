@@ -1,4 +1,4 @@
-import { inject, Injectable, InjectionToken } from '@angular/core';
+import { inject, Injectable, InjectionToken, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { BaseTrackingMetadata, BaseTrackingService } from './base-tracking.service';
@@ -58,7 +58,7 @@ export class GoogleAnalyticsService extends BaseTrackingService<BaseTrackingMeta
     private isLoaded: boolean = false;
 
     constructor(router: Router) {
-        super(router, { enabled: false });
+        super(router, { enabled: false }, inject(PLATFORM_ID));
         this.ANALYTICS_ID = inject(NGX_GOOGLE_ANALYTICS_ID);
         this.ANONYMIZE_IP = inject(NGX_GOOGLE_ANALYTICS_ANONYMIZE_IP);
         this.scriptService = inject(ScriptService);

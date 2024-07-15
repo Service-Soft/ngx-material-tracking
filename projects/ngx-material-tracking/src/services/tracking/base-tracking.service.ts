@@ -1,3 +1,5 @@
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, PLATFORM_ID } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 
 import { GdprCategory } from '../../models/gdpr-category.enum';
@@ -58,6 +60,9 @@ export abstract class BaseTrackingService<TrackingMetadata extends BaseTrackingM
      * Any locally stored data of this tracking service.
      */
     set metadata(value: TrackingMetadata) {
+        if (!isPlatformBrowser(this.platformId)) {
+            return;
+        }
         value.createdAt = value.createdAt ?? new Date();
         switch (this.METADATA_LOCATION) {
             case 'localStorage':
@@ -72,7 +77,12 @@ export abstract class BaseTrackingService<TrackingMetadata extends BaseTrackingM
         }
     }
 
-    constructor(private readonly router: Router, metadataDefaultValue: Omit<TrackingMetadata, 'createdAt'>) {
+    constructor(
+        private readonly router: Router,
+        metadataDefaultValue: Omit<TrackingMetadata, 'createdAt'>,
+        @Inject(PLATFORM_ID)
+        protected readonly platformId: Object
+    ) {
         this.metadataDefaultValue = metadataDefaultValue;
         this.initNavigationTracking();
     }
@@ -133,6 +143,9 @@ export abstract class BaseTrackingService<TrackingMetadata extends BaseTrackingM
      * @returns The currently saved tracking metadata.
      */
     protected getMetadataFromSessionStorage(): TrackingMetadata {
+        if (!isPlatformBrowser(this.platformId)) {
+            return { ...this.metadataDefaultValue, createdAt: new Date() } as TrackingMetadata;
+        }
         if (!sessionStorage.getItem(this.METADATA_KEY)) {
             this.setDefaultMetadata();
         }
@@ -145,6 +158,9 @@ export abstract class BaseTrackingService<TrackingMetadata extends BaseTrackingM
      * @returns The currently saved tracking metadata.
      */
     protected getMetadataFromLocalStorage(): TrackingMetadata {
+        if (!isPlatformBrowser(this.platformId)) {
+            return { ...this.metadataDefaultValue, createdAt: new Date() } as TrackingMetadata;
+        }
         if (!localStorage.getItem(this.METADATA_KEY)) {
             this.setDefaultMetadata();
         }

@@ -1,85 +1,65 @@
 {
     "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-    "version": 1,
-    "newProjectRoot": "projects",
-    "schematics": {
-        "@schematics/angular:component": {
-            "style": "scss"
-        }
+    "cli": {
+        "analytics": false
     },
+    "newProjectRoot": "projects",
     "projects": {
         "ngx-material-tracking": {
-            "projectType": "library",
-            "root": "projects/ngx-material-tracking",
-            "sourceRoot": "projects/ngx-material-tracking/src",
-            "prefix": "lib",
             "architect": {
                 "build": {
                     "builder": "@angular-devkit/build-angular:ng-packagr",
-                    "options": {
-                        "project": "projects/ngx-material-tracking/ng-package.json"
-                    },
                     "configurations": {
-                        "production": {
-                            "tsConfig": "projects/ngx-material-tracking/tsconfig.lib.prod.json"
-                        },
                         "development": {
                             "tsConfig": "projects/ngx-material-tracking/tsconfig.lib.json"
+                        },
+                        "production": {
+                            "tsConfig": "projects/ngx-material-tracking/tsconfig.lib.prod.json"
                         }
                     },
-                    "defaultConfiguration": "production"
+                    "defaultConfiguration": "production",
+                    "options": {
+                        "project": "projects/ngx-material-tracking/ng-package.json"
+                    }
                 },
                 "test": {
                     "builder": "@angular-devkit/build-angular:karma",
                     "options": {
+                        "karmaConfig": "projects/ngx-material-tracking/karma.conf.js",
                         "main": "projects/ngx-material-tracking/src/test.ts",
-                        "tsConfig": "projects/ngx-material-tracking/tsconfig.spec.json",
-                        "karmaConfig": "projects/ngx-material-tracking/karma.conf.js"
+                        "tsConfig": "projects/ngx-material-tracking/tsconfig.spec.json"
                     }
                 }
-            }
+            },
+            "prefix": "lib",
+            "projectType": "library",
+            "root": "projects/ngx-material-tracking",
+            "sourceRoot": "projects/ngx-material-tracking/src"
         },
         "ngx-material-tracking-showcase": {
-            "projectType": "application",
-            "schematics": {
-                "@schematics/angular:component": {
-                    "style": "scss"
-                }
-            },
-            "root": "projects/ngx-material-tracking-showcase",
-            "sourceRoot": "projects/ngx-material-tracking-showcase/src",
-            "prefix": "app",
             "architect": {
                 "build": {
                     "builder": "@angular-devkit/build-angular:browser",
-                    "options": {
-                        "outputPath": "dist/ngx-material-tracking-showcase",
-                        "index": "projects/ngx-material-tracking-showcase/src/index.html",
-                        "main": "projects/ngx-material-tracking-showcase/src/main.ts",
-                        "polyfills": "projects/ngx-material-tracking-showcase/src/polyfills.ts",
-                        "tsConfig": "projects/ngx-material-tracking-showcase/tsconfig.app.json",
-                        "inlineStyleLanguage": "scss",
-                        "assets": [
-                            "projects/ngx-material-tracking-showcase/src/favicon.ico",
-                            "projects/ngx-material-tracking-showcase/src/assets"
-                        ],
-                        "styles": [
-                            "projects/ngx-material-tracking-showcase/src/styles.scss"
-                        ],
-                        "scripts": []
-                    },
                     "configurations": {
+                        "development": {
+                            "buildOptimizer": false,
+                            "extractLicenses": false,
+                            "namedChunks": true,
+                            "optimization": false,
+                            "sourceMap": true,
+                            "vendorChunk": true
+                        },
                         "production": {
                             "budgets": [
                                 {
-                                    "type": "initial",
+                                    "maximumError": "1mb",
                                     "maximumWarning": "500kb",
-                                    "maximumError": "1mb"
+                                    "type": "initial"
                                 },
                                 {
-                                    "type": "anyComponentStyle",
+                                    "maximumError": "4kb",
                                     "maximumWarning": "2kb",
-                                    "maximumError": "4kb"
+                                    "type": "anyComponentStyle"
                                 }
                             ],
                             "fileReplacements": [
@@ -89,58 +69,74 @@
                                 }
                             ],
                             "outputHashing": "all"
-                        },
-                        "development": {
-                            "buildOptimizer": false,
-                            "optimization": false,
-                            "vendorChunk": true,
-                            "extractLicenses": false,
-                            "sourceMap": true,
-                            "namedChunks": true
                         }
                     },
-                    "defaultConfiguration": "production"
-                },
-                "serve": {
-                    "builder": "@angular-devkit/build-angular:dev-server",
-                    "configurations": {
-                        "production": {
-                            "browserTarget": "ngx-material-tracking-showcase:build:production"
-                        },
-                        "development": {
-                            "browserTarget": "ngx-material-tracking-showcase:build:development"
-                        }
-                    },
-                    "defaultConfiguration": "development"
-                },
-                "extract-i18n": {
-                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "defaultConfiguration": "production",
                     "options": {
-                        "browserTarget": "ngx-material-tracking-showcase:build"
-                    }
-                },
-                "test": {
-                    "builder": "@angular-devkit/build-angular:karma",
-                    "options": {
-                        "main": "projects/ngx-material-tracking-showcase/src/test.ts",
-                        "polyfills": "projects/ngx-material-tracking-showcase/src/polyfills.ts",
-                        "tsConfig": "projects/ngx-material-tracking-showcase/tsconfig.spec.json",
-                        "karmaConfig": "projects/ngx-material-tracking-showcase/karma.conf.js",
-                        "inlineStyleLanguage": "scss",
                         "assets": [
                             "projects/ngx-material-tracking-showcase/src/favicon.ico",
                             "projects/ngx-material-tracking-showcase/src/assets"
                         ],
-                        "styles": [
-                            "projects/ngx-material-tracking-showcase/src/styles.scss"
+                        "index": "projects/ngx-material-tracking-showcase/src/index.html",
+                        "inlineStyleLanguage": "scss",
+                        "main": "projects/ngx-material-tracking-showcase/src/main.ts",
+                        "outputPath": "dist/ngx-material-tracking-showcase",
+                        "polyfills": "projects/ngx-material-tracking-showcase/src/polyfills.ts",
+                        "scripts": [],
+                        "styles": ["projects/ngx-material-tracking-showcase/src/styles.scss"],
+                        "tsConfig": "projects/ngx-material-tracking-showcase/tsconfig.app.json"
+                    }
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "buildTarget": "ngx-material-tracking-showcase:build"
+                    }
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "configurations": {
+                        "development": {
+                            "buildTarget": "ngx-material-tracking-showcase:build:development"
+                        },
+                        "production": {
+                            "buildTarget": "ngx-material-tracking-showcase:build:production"
+                        }
+                    },
+                    "defaultConfiguration": "development"
+                },
+                "test": {
+                    "builder": "@angular-devkit/build-angular:karma",
+                    "options": {
+                        "assets": [
+                            "projects/ngx-material-tracking-showcase/src/favicon.ico",
+                            "projects/ngx-material-tracking-showcase/src/assets"
                         ],
-                        "scripts": []
+                        "inlineStyleLanguage": "scss",
+                        "karmaConfig": "projects/ngx-material-tracking-showcase/karma.conf.js",
+                        "main": "projects/ngx-material-tracking-showcase/src/test.ts",
+                        "polyfills": "projects/ngx-material-tracking-showcase/src/polyfills.ts",
+                        "scripts": [],
+                        "styles": ["projects/ngx-material-tracking-showcase/src/styles.scss"],
+                        "tsConfig": "projects/ngx-material-tracking-showcase/tsconfig.spec.json"
                     }
                 }
-            }
+            },
+            "prefix": "app",
+            "projectType": "application",
+            "root": "projects/ngx-material-tracking-showcase",
+            "schematics": {
+                "@schematics/angular:component": {
+                    "style": "scss"
+                }
+            },
+            "sourceRoot": "projects/ngx-material-tracking-showcase/src"
         }
     },
-    "cli": {
-      "analytics": false
-    }
+    "schematics": {
+        "@schematics/angular:component": {
+            "style": "scss"
+        }
+    },
+    "version": 1
 }
