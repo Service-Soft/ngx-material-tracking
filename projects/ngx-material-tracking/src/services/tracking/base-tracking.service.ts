@@ -131,6 +131,9 @@ export abstract class BaseTrackingService<TrackingMetadata extends BaseTrackingM
      * @returns The currently saved tracking metadata.
      */
     protected getMetadataFromCookie(): TrackingMetadata {
+        if (!isPlatformBrowser(this.platformId)) {
+            return { ...this.metadataDefaultValue, createdAt: new Date() } as TrackingMetadata;
+        }
         if (!cookieStorage.getItem(this.METADATA_KEY)) {
             this.setDefaultMetadata();
         }

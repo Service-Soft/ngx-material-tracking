@@ -85,6 +85,9 @@ export abstract class CustomTrackingService<
         if ((Date.now() - firstVisitInMs) > this.FIRST_VISIT_DURATION_IN_MS) {
             this.metadata = { ...res, firstVisit: new Date() };
         }
+        if (!isPlatformBrowser(this.platformId)) {
+            return this.metadata;
+        }
         return JSON.parse(cookieStorage.getItem(this.METADATA_KEY) as string) as TrackingMetadata;
     }
 
