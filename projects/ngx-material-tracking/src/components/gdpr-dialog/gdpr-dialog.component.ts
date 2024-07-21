@@ -5,6 +5,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { FaIconComponent, IconDefinition } from '@fortawesome/angular-fontawesome';
+import { faChevronDown, faChevronUp, faClose } from '@fortawesome/free-solid-svg-icons';
 
 import { GdprCategory } from '../../models/gdpr-category.enum';
 import { GdprDialogDataInternal } from '../../models/gdpr-dialog-data-internal.model';
@@ -27,10 +29,18 @@ import { BaseTrackingMetadata, BaseTrackingService } from '../../services/tracki
         MatSlideToggleModule,
         MatDialogModule,
         MatExpansionModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        FaIconComponent
     ]
 })
 export class GdprDialogComponent implements OnInit {
+
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    faClose: IconDefinition = faClose;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    faChevronDown: IconDefinition = faChevronDown;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    faChevronUp: IconDefinition = faChevronUp;
 
     /**
      * The internal gdpr dialog data. Built from config provided by the user and default values.

@@ -37,6 +37,8 @@
         "@angular-devkit/build-angular": "~18.1.0",
         "@angular/cli": "~18.1.0",
         "@angular/compiler-cli": "~18.1.0",
+        "@fortawesome/angular-fontawesome": "^0.15.0",
+        "@fortawesome/free-solid-svg-icons": "^6.6.0",
         "@types/jasmine": "~5.1.4",
         "concurrently": "^8.2.2",
         "eslint-config-service-soft": "^1.5.3",

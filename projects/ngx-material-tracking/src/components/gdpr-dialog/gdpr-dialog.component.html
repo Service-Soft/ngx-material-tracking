@@ -1,7 +1,7 @@
 <div class="dialog-title" mat-dialog-title>
     <h1>{{gdprDialogData.title}}</h1>
     @if (gdprDialogData.displayCloseAllowsAll) {
-        <a class="close-button" (click)="allowAll()">{{gdprDialogData.allowAllButtonLabel}} <i class="fas fa-close"></i></a>
+        <a class="close-button" (click)="allowAll()">{{gdprDialogData.allowAllButtonLabel}} <fa-icon [icon]="faClose"></fa-icon></a>
     }
 </div>
 <div class="dialog-content" mat-dialog-content>
@@ -14,7 +14,7 @@
             <b (click)="technicalNecessaryOpened = !technicalNecessaryOpened">
                 {{gdprDialogData.technicalNecessaryTitle}}
                 @if (!gdprDialogData.showOnlyCategories) {
-                    <i class="fas" [class.fa-chevron-down]="!technicalNecessaryOpened" [class.fa-chevron-up]="technicalNecessaryOpened"></i>
+                    <fa-icon [icon]="!technicalNecessaryOpened ? faChevronDown : faChevronUp"></fa-icon>
                 }
             </b>
         </div>
@@ -43,7 +43,7 @@
             <b (click)="enabledByDefaultOpened = !enabledByDefaultOpened">
                 {{gdprDialogData.enabledByDefaultTitle}}
                 @if (!gdprDialogData.showOnlyCategories) {
-                    <i class="fas" [class.fa-chevron-down]="!enabledByDefaultOpened" [class.fa-chevron-up]="enabledByDefaultOpened"></i>
+                    <fa-icon [icon]="!enabledByDefaultOpened ? faChevronDown : faChevronUp"></fa-icon>
                 }
             </b>
         </div>
@@ -73,7 +73,7 @@
             <b (click)="disabledByDefaultOpened = !disabledByDefaultOpened">
                 {{gdprDialogData.disabledByDefaultTitle}}
                 @if (!gdprDialogData.showOnlyCategories) {
-                    <i class="fas" [class.fa-chevron-down]="!disabledByDefaultOpened" [class.fa-chevron-up]="disabledByDefaultOpened"></i>
+                    <fa-icon [icon]="!disabledByDefaultOpened ? faChevronDown : faChevronUp"></fa-icon>
                 }
             </b>
         </div>
