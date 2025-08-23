@@ -1,4 +1,4 @@
-import { NgFor, NgIf, PercentPipe } from '@angular/common';
+import { PercentPipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -17,8 +17,6 @@ import { FunnelPoint } from '../../models/funnel-point.model';
     templateUrl: './funnel.component.html',
     styleUrls: ['./funnel.component.scss'],
     imports: [
-        NgFor,
-        NgIf,
         FormsModule,
         MatDatepickerModule,
         MatFormFieldModule,

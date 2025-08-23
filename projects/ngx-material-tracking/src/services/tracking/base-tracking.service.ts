@@ -47,12 +47,15 @@ export abstract class BaseTrackingService<TrackingMetadata extends BaseTrackingM
     // eslint-disable-next-line jsdoc/require-jsdoc
     get metadata(): TrackingMetadata {
         switch (this.METADATA_LOCATION) {
-            case 'localStorage':
+            case 'localStorage': {
                 return this.getMetadataFromLocalStorage();
-            case 'sessionStorage':
+            }
+            case 'sessionStorage': {
                 return this.getMetadataFromSessionStorage();
-            case 'cookie':
+            }
+            case 'cookie': {
                 return this.getMetadataFromCookie();
+            }
         }
     }
 
@@ -65,15 +68,18 @@ export abstract class BaseTrackingService<TrackingMetadata extends BaseTrackingM
         }
         value.createdAt = value.createdAt ?? new Date();
         switch (this.METADATA_LOCATION) {
-            case 'localStorage':
+            case 'localStorage': {
                 localStorage.setItem(this.METADATA_KEY, JSON.stringify(value));
                 break;
-            case 'sessionStorage':
+            }
+            case 'sessionStorage': {
                 sessionStorage.setItem(this.METADATA_KEY, JSON.stringify(value));
                 break;
-            case 'cookie':
+            }
+            case 'cookie': {
                 cookieStorage.setItem(this.METADATA_KEY, JSON.stringify(value));
                 break;
+            }
         }
     }
 
@@ -91,7 +97,7 @@ export abstract class BaseTrackingService<TrackingMetadata extends BaseTrackingM
      * Enables the tracking.
      * By default this simply sets the metadata to enabled.
      */
-    enable(): void {
+    enable(): void | Promise<void> {
         if (!this.metadata.enabled) {
             this.metadata = { ...this.metadata, enabled: true };
         }
@@ -114,7 +120,7 @@ export abstract class BaseTrackingService<TrackingMetadata extends BaseTrackingM
     initNavigationTracking(): void {
         this.router.events.subscribe(e => {
             if (e instanceof NavigationEnd) {
-                this.onNavigationEnd(e);
+                void this.onNavigationEnd(e);
             }
         });
     }
@@ -123,7 +129,7 @@ export abstract class BaseTrackingService<TrackingMetadata extends BaseTrackingM
      * This method is run whenever the user navigates.
      * It can be used to track visits over the website etc.
      */
-    abstract onNavigationEnd(event: NavigationEnd): void;
+    abstract onNavigationEnd(event: NavigationEnd): void | Promise<void>;
 
     /**
      * Gets the metadata from a cookie.

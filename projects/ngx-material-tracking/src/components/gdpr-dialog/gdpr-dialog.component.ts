@@ -185,8 +185,8 @@ export class GdprDialogComponent implements OnInit {
     /**
      * Allows the usage of all tracking services.
      */
-    allowAll(): void {
-        this.gdprService.enableAllTrackings();
+    async allowAll(): Promise<void> {
+        await this.gdprService.enableAllTrackings();
         this.gdprService.hasMadeGdprChoices = true;
         this.close();
     }
@@ -212,7 +212,7 @@ export class GdprDialogComponent implements OnInit {
      * Toggle a single tracking service.
      * @param tracking - The tracking to toggle.
      */
-    toggleTracking<TrackingMetadata extends BaseTrackingMetadata>(tracking: Tracking<TrackingMetadata>): void {
+    async toggleTracking<TrackingMetadata extends BaseTrackingMetadata>(tracking: Tracking<TrackingMetadata>): Promise<void> {
         const trackingService: BaseTrackingService<TrackingMetadata> = this.injector.get<BaseTrackingService<TrackingMetadata>>(
             tracking.TrackingServiceClass
         );
@@ -220,13 +220,13 @@ export class GdprDialogComponent implements OnInit {
             trackingService.disable();
             return;
         }
-        trackingService.enable();
+        await trackingService.enable();
     }
 
     /**
      * Toggles all enabled by default trackings.
      */
-    toggleEnabledByDefaultTrackings(): void {
+    async toggleEnabledByDefaultTrackings(): Promise<void> {
         if (this.allEnabledByDefaultEnabled) {
             for (const tracking of this.enabledByDefaultTrackings) {
                 // eslint-disable-next-line stylistic/max-len
@@ -241,14 +241,14 @@ export class GdprDialogComponent implements OnInit {
             const trackingService: BaseTrackingService<BaseTrackingMetadata> = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
                 tracking.TrackingServiceClass
             );
-            trackingService.enable();
+            await trackingService.enable();
         }
     }
 
     /**
      * Toggles all disabled by default trackings.
      */
-    toggleDisabledByDefaultTrackings(): void {
+    async toggleDisabledByDefaultTrackings(): Promise<void> {
         if (this.allDisabledByDefaultEnabled) {
             for (const tracking of this.disabledByDefaultTrackings) {
                 // eslint-disable-next-line stylistic/max-len
@@ -263,7 +263,7 @@ export class GdprDialogComponent implements OnInit {
             const trackingService: BaseTrackingService<BaseTrackingMetadata> = this.injector.get<BaseTrackingService<BaseTrackingMetadata>>(
                 tracking.TrackingServiceClass
             );
-            trackingService.enable();
+            await trackingService.enable();
         }
     }
 

@@ -51,7 +51,7 @@ export class PixelService extends BaseTrackingService<BaseTrackingMetadata> {
     }
 
     override async enable(): Promise<void> {
-        super.enable();
+        await super.enable();
         await this.loadPixelScript();
     }
 
@@ -79,7 +79,7 @@ export class PixelService extends BaseTrackingService<BaseTrackingMetadata> {
             );
             this.isLoaded = true;
         }
-        catch (error) {
+        catch {
             // eslint-disable-next-line no-console
             console.error(`Failed to load Pixel Script with PIXEL_ID ${this.PIXEL_ID}`);
             this.disable();
@@ -111,6 +111,7 @@ export class PixelService extends BaseTrackingService<BaseTrackingMetadata> {
     ): Promise<void> {
         return new Promise((resolve, reject) => {
             if (this.isLoaded) {
+                // eslint-disable-next-line typescript/no-unsafe-call
                 fbq(method, eventName, properties);
                 resolve();
                 return;
@@ -118,6 +119,7 @@ export class PixelService extends BaseTrackingService<BaseTrackingMetadata> {
             this.loadPixelScript()
                 // eslint-disable-next-line promise/prefer-await-to-then
                 .then(() => {
+                    // eslint-disable-next-line typescript/no-unsafe-call
                     fbq(method, eventName, properties);
                     resolve();
                 })

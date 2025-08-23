@@ -3,3 +3,4 @@ gdpr
 GDPR
 noopener
 noreferrer
+packagr

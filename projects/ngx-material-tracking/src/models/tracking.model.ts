@@ -47,5 +47,5 @@ export interface Tracking<
      * The service that is handling the tracking.
      */
     TrackingServiceClass: BaseTrackingServiceClassType<TrackingMetadata>
-    | CustomBaseTrackingServiceClassType<CustomTrackingMetadata, TrackingVisitType, TrackingEventType>
+        | CustomBaseTrackingServiceClassType<CustomTrackingMetadata, TrackingVisitType, TrackingEventType>
 }

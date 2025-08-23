@@ -121,7 +121,7 @@ export class GdprService {
             localStorage.removeItem(this.HAS_MADE_GDPR_CHOICES_KEY);
             return false;
         }
-        catch (error) {
+        catch {
             localStorage.removeItem(this.HAS_MADE_GDPR_CHOICES_KEY);
             return false;
         }
@@ -192,9 +192,9 @@ export class GdprService {
     /**
      * Enables all tracking services.
      */
-    enableAllTrackings(): void {
+    async enableAllTrackings(): Promise<void> {
         for (const tracking of this.trackings) {
-            this.enableTracking(tracking);
+            await this.enableTracking(tracking);
         }
     }
 
@@ -202,7 +202,7 @@ export class GdprService {
      * Enables the given tracking service.
      * @param tracking - The tracking service to enable.
      */
-    enableTracking<TrackingMetadata extends BaseTrackingMetadata>(tracking: Tracking<TrackingMetadata>): void {
-        this.injector.get<BaseTrackingService<TrackingMetadata>>(tracking.TrackingServiceClass).enable();
+    async enableTracking<TrackingMetadata extends BaseTrackingMetadata>(tracking: Tracking<TrackingMetadata>): Promise<void> {
+        await this.injector.get<BaseTrackingService<TrackingMetadata>>(tracking.TrackingServiceClass).enable();
     }
 }

@@ -65,7 +65,7 @@ export class GoogleAnalyticsService extends BaseTrackingService<BaseTrackingMeta
     }
 
     override async enable(): Promise<void> {
-        super.enable();
+        await super.enable();
         await this.loadScripts();
     }
 
@@ -80,7 +80,7 @@ export class GoogleAnalyticsService extends BaseTrackingService<BaseTrackingMeta
         try {
             await this.scriptService.loadPermanentJsScript('', `https://www.googletagmanager.com/gtag/js?id=${this.ANALYTICS_ID}`, 'head', this.ANALYTICS_SCRIPT_ID);
         }
-        catch (error) {
+        catch {
             // eslint-disable-next-line no-console
             console.error(`Failed to load Google Analytics Script from https://www.googletagmanager.com/gtag/js?id=${this.ANALYTICS_ID}`);
             this.disable();
@@ -116,6 +116,7 @@ export class GoogleAnalyticsService extends BaseTrackingService<BaseTrackingMeta
             this.loadScripts()
                 // eslint-disable-next-line promise/prefer-await-to-then
                 .then(() => {
+                    // eslint-disable-next-line typescript/no-unsafe-call
                     gtag('config', this.ANALYTICS_ID, {
                         anonymize_ip: this.ANONYMIZE_IP,
                         page_path: window.location.href
@@ -141,6 +142,7 @@ export class GoogleAnalyticsService extends BaseTrackingService<BaseTrackingMeta
      */
     trackEvent(name: string, event: GoogleAnalyticsEvent): void {
         if (this.metadata.enabled) {
+            // eslint-disable-next-line typescript/no-unsafe-call
             gtag('event', name, {
                 ...event,
                 send_to: this.ANALYTICS_ID,

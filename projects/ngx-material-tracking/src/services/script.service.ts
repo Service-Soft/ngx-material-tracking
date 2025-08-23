@@ -127,15 +127,11 @@ export class ScriptService {
         try {
             this.renderer.removeChild(this.document.body, element);
         }
-        catch (error) {
-
-        }
+        catch {}
         try {
             this.renderer.removeChild(this.document.head, element);
         }
-        catch (error) {
-
-        }
+        catch {}
     }
 
     /**
@@ -153,15 +149,11 @@ export class ScriptService {
             try {
                 this.renderer.removeChild(this.document.body, element);
             }
-            catch (error) {
-
-            }
+            catch {}
             try {
                 this.renderer.removeChild(this.document.head, element);
             }
-            catch (error) {
-
-            }
+            catch {}
         }
     }
 }

@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { APP_INITIALIZER, enableProdMode } from '@angular/core';
+import { enableProdMode, inject, provideAppInitializer } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { Routes, provideRouter } from '@angular/router';
 import { DntSettings, GdprDialogData, GdprGuard, GoogleAnalyticsService, GoogleTagManagerService, NGX_GDPR_DIALOG_DATA, NGX_GDPR_DNT_SETTINGS, NGX_GDPR_TRACKINGS, NGX_GOOGLE_ANALYTICS_ID, NGX_GOOGLE_TAG_MANAGER_ID, NGX_PIXEL_ID, PixelService, Tracking } from 'ngx-material-tracking';
 
@@ -85,7 +84,6 @@ bootstrapApplication(
         providers: [
             provideHttpClient(withInterceptorsFromDi()),
             provideRouter(routes),
-            provideAnimations(),
             {
                 provide: NGX_GDPR_TRACKINGS,
                 useValue: trackings
@@ -110,14 +108,12 @@ bootstrapApplication(
                 provide: NGX_GDPR_DNT_SETTINGS,
                 useValue: dntSettings
             },
-            {
-                provide: APP_INITIALIZER,
-                useFactory: () => {
-                    return () => {};
-                },
-                deps: [GoogleAnalyticsService, GoogleTagManagerService, PixelService, InternalAnalyticsService],
-                multi: true
-            }
+            provideAppInitializer(() => {
+                inject(GoogleAnalyticsService);
+                inject(GoogleTagManagerService);
+                inject(PixelService);
+                inject(InternalAnalyticsService);
+            })
         ]
     }
 // eslint-disable-next-line promise/prefer-await-to-callbacks

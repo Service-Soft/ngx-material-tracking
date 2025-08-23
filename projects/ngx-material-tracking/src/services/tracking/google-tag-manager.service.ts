@@ -54,7 +54,7 @@ export class GoogleTagManagerService extends BaseTrackingService<BaseTrackingMet
     }
 
     override async enable(): Promise<void> {
-        super.enable();
+        await super.enable();
         await this.loadGTMScript();
     }
 
@@ -137,7 +137,7 @@ export class GoogleTagManagerService extends BaseTrackingService<BaseTrackingMet
             await this.scriptService.loadPermanentJsScript('', this.applyGtmQueryParams('https://www.googletagmanager.com/gtm.js'), 'head', this.GTM_SCRIPT_ID);
             this.isLoaded = true;
         }
-        catch (error) {
+        catch {
             // eslint-disable-next-line no-console
             console.error(`Failed to load GTM Script from ${this.applyGtmQueryParams('https://www.googletagmanager.com/gtm.js')}`);
             this.disable();

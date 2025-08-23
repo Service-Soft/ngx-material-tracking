@@ -21,14 +21,6 @@
                     "options": {
                         "project": "projects/ngx-material-tracking/ng-package.json"
                     }
-                },
-                "test": {
-                    "builder": "@angular-devkit/build-angular:karma",
-                    "options": {
-                        "karmaConfig": "projects/ngx-material-tracking/karma.conf.js",
-                        "main": "projects/ngx-material-tracking/src/test.ts",
-                        "tsConfig": "projects/ngx-material-tracking/tsconfig.spec.json"
-                    }
                 }
             },
             "prefix": "lib",
@@ -104,22 +96,6 @@
                         }
                     },
                     "defaultConfiguration": "development"
-                },
-                "test": {
-                    "builder": "@angular-devkit/build-angular:karma",
-                    "options": {
-                        "assets": [
-                            "projects/ngx-material-tracking-showcase/src/favicon.ico",
-                            "projects/ngx-material-tracking-showcase/src/assets"
-                        ],
-                        "inlineStyleLanguage": "scss",
-                        "karmaConfig": "projects/ngx-material-tracking-showcase/karma.conf.js",
-                        "main": "projects/ngx-material-tracking-showcase/src/test.ts",
-                        "polyfills": "projects/ngx-material-tracking-showcase/src/polyfills.ts",
-                        "scripts": [],
-                        "styles": ["projects/ngx-material-tracking-showcase/src/styles.scss"],
-                        "tsConfig": "projects/ngx-material-tracking-showcase/tsconfig.spec.json"
-                    }
                 }
             },
             "prefix": "app",
