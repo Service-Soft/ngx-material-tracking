@@ -1,8 +1,8 @@
+import { Dialog } from '@angular/cdk/dialog';
 import { isPlatformBrowser } from '@angular/common';
 import { inject, Inject, Injectable, InjectionToken, Injector, PLATFORM_ID } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
+import { SnackbarService } from './snackbar.service';
 import { BaseTrackingMetadata, BaseTrackingService } from './tracking/base-tracking.service';
 import { GdprDialogComponent } from '../components/gdpr-dialog/gdpr-dialog.component';
 import { DntSettings } from '../models/dnt-settings.model';
@@ -107,7 +107,7 @@ export class GdprService {
             if (this.dntEnabled) {
                 this.disableAllTrackings();
                 localStorage.setItem(this.HAS_MADE_GDPR_CHOICES_KEY, JSON.stringify({ createdAt: new Date() }));
-                this.snackbar.open(this.dntSettings.snackbarMessage, undefined, { duration: this.dntSettings.snackbarDuration });
+                this.snackbar.open(this.dntSettings.snackbarMessage, { duration: this.dntSettings.snackbarDuration });
                 return true;
             }
             return false;
@@ -135,13 +135,17 @@ export class GdprService {
 
     private get dntEnabled(): boolean {
         return this.dntSettings.respect
-            // eslint-disable-next-line typescript/no-unsafe-member-access, typescript/no-explicit-any
-            && (navigator.doNotTrack == '1' || navigator.doNotTrack == 'yes' || (window as any).doNotTrack == '1');
+            && (
+                ('globalPrivacyControl' in navigator && navigator.globalPrivacyControl == true)
+                || navigator.doNotTrack == '1'
+                || navigator.doNotTrack == 'yes'
+                || ('doNotTrack' in window && window.doNotTrack == '1')
+            );
     }
 
     constructor(
         private readonly injector: Injector,
-        private readonly dialog: MatDialog,
+        private readonly dialog: Dialog,
         @Inject(NGX_GDPR_TRACKINGS)
         readonly trackings: Tracking[],
         @Inject(NGX_HAS_MADE_GDPR_CHOICES_DURATION_IN_MS)
@@ -150,7 +154,7 @@ export class GdprService {
         private readonly dialogData: GdprDialogData,
         @Inject(NGX_GDPR_DNT_SETTINGS)
         private readonly dntSettings: DntSettings,
-        private readonly snackbar: MatSnackBar,
+        private readonly snackbar: SnackbarService,
         @Inject(PLATFORM_ID)
         private readonly platformId: Object
     ) { }
@@ -167,7 +171,7 @@ export class GdprService {
             restoreFocus: false,
             panelClass: GDPR_DIALOG_PANEL_CLASS,
             disableClose: true,
-            // maxHeight: 'calc(100vh - 30px)',
+            maxHeight: 'calc(100vh - 30px)',
             maxWidth: 'calc(100vw - 30px)'
         });
     }

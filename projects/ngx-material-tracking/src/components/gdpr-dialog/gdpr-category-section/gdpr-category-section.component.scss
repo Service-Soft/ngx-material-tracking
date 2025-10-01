@@ -1,0 +1,80 @@
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+input[type="checkbox"].disabled {
+    cursor: not-allowed;
+    background-color: #c2c2c9;
+}
+
+label {
+    font-weight: bold;
+}
+
+p {
+    margin-top: 4px;
+    margin-bottom: 0px;
+}
+
+.category-title {
+    display: flex;
+    align-items: center;
+    height: 24px;
+    margin-bottom: 5px;
+    margin-top: 24px;
+    gap: 5px;
+
+    b:hover {
+        cursor: pointer;
+    }
+}
+
+.tracking {
+    padding: 12px;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
+}
+
+.tracking-title {
+    // margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.slide-toggle {
+    width: 43px;
+    height: 24px;
+    border-radius: 12px;
+    background: #ccc;
+    cursor: pointer;
+    position: relative;
+}
+
+.thumb {
+    width: 22px;
+    height: 22px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    transition: left 0.2s;
+}
+
+.slide-toggle.checked {
+    background-color: green;
+
+    .thumb {
+        left: 20px;
+    }
+}
+
+.slide-toggle.checked.disabled {
+    cursor: not-allowed;
+
+    .thumb {
+        background-color: #c2c2c9;
+    }
+}

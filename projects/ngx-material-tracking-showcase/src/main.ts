@@ -3,11 +3,12 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { enableProdMode, inject, provideAppInitializer } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { Routes, provideRouter } from '@angular/router';
-import { DntSettings, GdprDialogData, GdprGuard, GoogleAnalyticsService, GoogleTagManagerService, NGX_GDPR_DIALOG_DATA, NGX_GDPR_DNT_SETTINGS, NGX_GDPR_TRACKINGS, NGX_GOOGLE_ANALYTICS_ID, NGX_GOOGLE_TAG_MANAGER_ID, NGX_PIXEL_ID, PixelService, Tracking } from 'ngx-material-tracking';
+import { DntSettings, GdprDialogData, GdprGuard, GoogleAnalyticsService, GoogleTagManagerService, NGX_GDPR_DIALOG_DATA, NGX_GDPR_DNT_SETTINGS, NGX_GDPR_TRACKINGS, NGX_GOOGLE_ANALYTICS_ID, NGX_GOOGLE_TAG_MANAGER_ID, NGX_PIXEL_ID, NGX_TRACKING_SNACKBAR_COMPONENT, PixelService, SnackbarComponent, Tracking } from 'ngx-material-tracking';
 
 import { AppComponent } from './app/app.component';
 import { HomeComponent } from './app/pages/home/home.component';
 import { Page1Component } from './app/pages/page1/page1.component';
+import { InternalAnalytics2Service } from './app/services/internal-analytics-2.service';
 import { InternalAnalyticsService } from './app/services/internal-analytics.service';
 import { environment } from './environments/environment';
 
@@ -21,6 +22,11 @@ const trackings: Tracking[] = [
         name: 'Internal Analytics',
         description: ['This is used to track your navigation over the website.'],
         TrackingServiceClass: InternalAnalyticsService
+    },
+    {
+        name: 'Internal Analytics 2',
+        description: ['This is used to track your navigation over the website.'],
+        TrackingServiceClass: InternalAnalytics2Service
     },
     {
         name: 'Google',
@@ -108,11 +114,16 @@ bootstrapApplication(
                 provide: NGX_GDPR_DNT_SETTINGS,
                 useValue: dntSettings
             },
+            {
+                provide: NGX_TRACKING_SNACKBAR_COMPONENT,
+                useValue: SnackbarComponent
+            },
             provideAppInitializer(() => {
                 inject(GoogleAnalyticsService);
                 inject(GoogleTagManagerService);
                 inject(PixelService);
                 inject(InternalAnalyticsService);
+                inject(InternalAnalytics2Service);
             })
         ]
     }

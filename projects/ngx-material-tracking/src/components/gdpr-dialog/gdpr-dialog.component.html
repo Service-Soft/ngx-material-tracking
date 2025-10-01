@@ -1,109 +1,89 @@
-<div class="dialog-title" mat-dialog-title>
-    <h1>{{gdprDialogData.title}}</h1>
-    @if (gdprDialogData.displayCloseAllowsAll) {
-        <a class="close-button" (click)="allowAll()">{{gdprDialogData.allowAllButtonLabel}} <fa-icon [icon]="faClose"></fa-icon></a>
-    }
-</div>
-<div class="dialog-content" mat-dialog-content>
-    <div [innerHTML]="gdprDialogData.text">
+ 
+<div class="dialog-container">
+    <div class="dialog-title">
+        <h1>{{gdprDialogData.title}}</h1>
+        @if (gdprDialogData.displayCloseAllowsAll) {
+            <a class="close-button" (click)="allowAll()">{{gdprDialogData.allowAllButtonLabel}} <fa-icon [icon]="faClose"></fa-icon></a>
+        }
     </div>
-
-    @if (technicalNecessaryTrackings.length) {
-        <div class="category-title">
-            <mat-checkbox checked disabled></mat-checkbox>
-            <b (click)="technicalNecessaryOpened = !technicalNecessaryOpened">
-                {{gdprDialogData.technicalNecessaryTitle}}
-                @if (!gdprDialogData.showOnlyCategories) {
-                    <fa-icon [icon]="!technicalNecessaryOpened ? faChevronDown : faChevronUp"></fa-icon>
-                }
-            </b>
+    <div class="dialog-content">
+        <div [innerHTML]="gdprDialogData.text">
         </div>
-        @if (technicalNecessaryOpened && !gdprDialogData.showOnlyCategories) {
-            <mat-accordion displayMode="flat">
-                @for (tracking of technicalNecessaryTrackings; track $index) {
-                    <mat-expansion-panel>
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                {{tracking.name}}
-                                <mat-slide-toggle checked disabled></mat-slide-toggle>
-                            </mat-panel-title>
-                        </mat-expansion-panel-header>
-                        @for (paragraph of tracking.description; track $index) {
-                           <div>{{paragraph}}</div>
-                        }
-                    </mat-expansion-panel>
-                }
-            </mat-accordion>
-        }
-    }
 
-    @if (enabledByDefaultTrackings.length) {
-        <div class="category-title">
-            <mat-checkbox [checked]="allEnabledByDefaultEnabled" [indeterminate]="someEnabledByDefaultEnabled" (change)="toggleEnabledByDefaultTrackings()"></mat-checkbox>
-            <b (click)="enabledByDefaultOpened = !enabledByDefaultOpened">
-                {{gdprDialogData.enabledByDefaultTitle}}
-                @if (!gdprDialogData.showOnlyCategories) {
-                    <fa-icon [icon]="!enabledByDefaultOpened ? faChevronDown : faChevronUp"></fa-icon>
-                }
-            </b>
-        </div>
-        @if (enabledByDefaultOpened && !gdprDialogData.showOnlyCategories) {
-            <mat-accordion displayMode="flat">
-                @for (tracking of enabledByDefaultTrackings; track $index) {
-                    <mat-expansion-panel>
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                {{tracking.name}}
-                                <!-- eslint-disable-next-line angular/no-call-expression -->
-                                <mat-slide-toggle [checked]="isTrackingEnabled(tracking)" (click)="$event.stopPropagation()" (change)="toggleTracking(tracking)"></mat-slide-toggle>
-                            </mat-panel-title>
-                        </mat-expansion-panel-header>
-                        @for (paragraph of tracking.description; track $index) {
-                            <div>{{paragraph}}</div>
-                        }
-                    </mat-expansion-panel>
-                }
-            </mat-accordion>
+        @if (technicalNecessaryTrackings.length) {
+            <ngx-mat-tracking-gdpr-category-section
+                [disabled]="true"
+                [title]="gdprDialogData.technicalNecessaryTitle"
+                [showOnlyCategories]="gdprDialogData.showOnlyCategories"
+                [trackings]="technicalNecessaryTrackings"
+                [opened]="this.gdprDialogData.categoriesOpenedByDefault"
+            >
+            </ngx-mat-tracking-gdpr-category-section>
         }
-    }
 
-    @if (disabledByDefaultTrackings.length) {
-        <div class="category-title">
-            <mat-checkbox [checked]="allDisabledByDefaultEnabled" [indeterminate]="someDisabledByDefaultEnabled" (change)="toggleDisabledByDefaultTrackings()"></mat-checkbox>
-            <b (click)="disabledByDefaultOpened = !disabledByDefaultOpened">
-                {{gdprDialogData.disabledByDefaultTitle}}
-                @if (!gdprDialogData.showOnlyCategories) {
-                    <fa-icon [icon]="!disabledByDefaultOpened ? faChevronDown : faChevronUp"></fa-icon>
-                }
-            </b>
-        </div>
-        @if (disabledByDefaultOpened && !gdprDialogData.showOnlyCategories) {
-            <mat-accordion displayMode="flat">
-                @for (tracking of disabledByDefaultTrackings; track $index) {
-                    <mat-expansion-panel>
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                {{tracking.name}}
-                                <!-- eslint-disable-next-line angular/no-call-expression -->
-                                <mat-slide-toggle [checked]="isTrackingEnabled(tracking)" (click)="$event.stopPropagation()" (change)="toggleTracking(tracking)"></mat-slide-toggle>
-                            </mat-panel-title>
-                        </mat-expansion-panel-header>
-                        @for (paragraph of tracking.description; track $index) {
-                            <div>{{paragraph}}</div>
-                        }
-                    </mat-expansion-panel>
-                }
-            </mat-accordion>
+        @if (enabledByDefaultTrackings.length) {
+            <ngx-mat-tracking-gdpr-category-section
+                [title]="gdprDialogData.enabledByDefaultTitle"
+                [showOnlyCategories]="gdprDialogData.showOnlyCategories"
+                [trackings]="enabledByDefaultTrackings"
+                [opened]="this.gdprDialogData.categoriesOpenedByDefault"
+            >
+            </ngx-mat-tracking-gdpr-category-section>
         }
-    }
-    
-</div>
-<div class="dialog-actions" mat-dialog-actions>
-    <button type="button" class="allow-all-button" mat-raised-button (click)="allowAll()">{{gdprDialogData.allowAllButtonLabel}}</button>
-    <button type="button" class="save-settings-button" mat-raised-button (click)="saveSettings()">{{gdprDialogData.saveSettingsButtonLabel}}</button>
-    <button type="button" class="disallow-all-button" mat-button (click)="disallowAll()">{{gdprDialogData.disallowAllButtonLabel}}</button>
-    <div class="links">
-        <a target="_blank" rel="noopener noreferrer" [href]="gdprDialogData.privacyRoute">{{gdprDialogData.privacyDisplayName}}</a>
-        <a target="_blank" rel="noopener noreferrer" [href]="gdprDialogData.imprintRoute">{{gdprDialogData.imprintDisplayName}}</a>
+
+        @if (disabledByDefaultTrackings.length) {
+            <ngx-mat-tracking-gdpr-category-section
+                [title]="gdprDialogData.disabledByDefaultTitle"
+                [showOnlyCategories]="gdprDialogData.showOnlyCategories"
+                [trackings]="disabledByDefaultTrackings"
+                [opened]="this.gdprDialogData.categoriesOpenedByDefault"
+            >
+            </ngx-mat-tracking-gdpr-category-section>
+            <!-- <div class="category-title">
+                <input type="checkbox" [checked]="allDisabledByDefaultEnabled" [aria-label]="gdprDialogData.disabledByDefaultTitle" [indeterminate]="someDisabledByDefaultEnabled" (change)="toggleDisabledByDefaultTrackings()">
+                <b tabindex="0"
+                    role="button"
+                    (keyup)="['Enter', ' '].includes($event.key) ? disabledByDefaultOpened = !disabledByDefaultOpened : undefined"
+                    (click)="disabledByDefaultOpened = !disabledByDefaultOpened"
+                > 
+                    {{gdprDialogData.disabledByDefaultTitle}}
+                    @if (!gdprDialogData.showOnlyCategories) {
+                        <fa-icon [icon]="!disabledByDefaultOpened ? faChevronDown : faChevronUp"></fa-icon>
+                    }
+                </b>
+            </div>
+            @if (disabledByDefaultOpened && !gdprDialogData.showOnlyCategories) {
+                <div class="tracking" [aria-expanded]="enabledByDefaultOpened">
+                    @for (tracking of disabledByDefaultTrackings; track $index) {
+                        <div class="tracking-title">
+                            <label [for]="tracking.name">{{tracking.name}}</label>
+                            <div class="slide-toggle"
+                                tabindex="0"
+                                role="switch"
+                                [class.checked]="isTrackingEnabled(tracking)"
+                                [aria-checked]="isTrackingEnabled(tracking)"
+                                [id]="tracking.name"
+                                (click)="toggleTracking(tracking);"
+                                (keyup)="['Enter', ' '].includes($event.key) ? toggleTracking(tracking) : undefined"
+                            >
+                                <div class="thumb"></div>
+                            </div>
+                        </div>
+                        @for (paragraph of tracking.description; track $index) {
+                            <p>{{paragraph}}</p>
+                        }
+                    }
+                </div>
+            } -->
+        }
+    </div>
+    <div class="dialog-actions">
+        <button type="button" class="allow-all-button" (click)="allowAll()">{{gdprDialogData.allowAllButtonLabel}}</button>
+        <button type="button" class="save-settings-button" (click)="saveSettings()">{{gdprDialogData.saveSettingsButtonLabel}}</button>
+        <button type="button" class="disallow-all-button" (click)="disallowAll()">{{gdprDialogData.disallowAllButtonLabel}}</button>
+        <div class="links">
+            <a target="_blank" rel="noopener noreferrer" [href]="gdprDialogData.privacyRoute">{{gdprDialogData.privacyDisplayName}}</a>
+            <a target="_blank" rel="noopener noreferrer" [href]="gdprDialogData.imprintRoute">{{gdprDialogData.imprintDisplayName}}</a>
+        </div>
     </div>
 </div>

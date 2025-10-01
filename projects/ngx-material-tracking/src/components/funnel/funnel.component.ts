@@ -1,10 +1,5 @@
 import { PercentPipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 
 import { FunnelPoint } from '../../models/funnel-point.model';
 
@@ -12,18 +7,11 @@ import { FunnelPoint } from '../../models/funnel-point.model';
  * A component that visualizes tracking statistics of a funnel.
  */
 @Component({
-    standalone: true,
     selector: 'ngx-mat-tracking-funnel',
     templateUrl: './funnel.component.html',
     styleUrls: ['./funnel.component.scss'],
-    imports: [
-        FormsModule,
-        MatDatepickerModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        PercentPipe
-    ]
+    standalone: true,
+    imports: [PercentPipe]
 })
 export class FunnelComponent {
 
