@@ -1,6 +1,8 @@
 // components
 export * from './components/funnel/funnel.component';
 export * from './components/gdpr-dialog/gdpr-dialog.component';
+export * from './components/snackbar/snackbar-component.interface';
+export * from './components/snackbar/snackbar.component';
 // models
 export * from './models/dnt-settings.model';
 export * from './models/event.model';

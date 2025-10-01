@@ -1,24 +1,24 @@
 /**
  * The default pixel event names.
  */
-export type PixelEventName = 'AddPaymentInfo' |
-    'AddToCart' |
-    'AddToWishlist' |
-    'CompleteRegistration' |
-    'Contact' |
-    'CustomizeProduct' |
-    'Donate' |
-    'FindLocation' |
-    'InitiateCheckout' |
-    'Lead' |
-    'PageView' |
-    'Purchase' |
-    'Schedule' |
-    'Search' |
-    'StartTrial' |
-    'SubmitApplication' |
-    'Subscribe' |
-    'ViewContent';
+export type PixelEventName = 'AddPaymentInfo'
+    | 'AddToCart'
+    | 'AddToWishlist'
+    | 'CompleteRegistration'
+    | 'Contact'
+    | 'CustomizeProduct'
+    | 'Donate'
+    | 'FindLocation'
+    | 'InitiateCheckout'
+    | 'Lead'
+    | 'PageView'
+    | 'Purchase'
+    | 'Schedule'
+    | 'Search'
+    | 'StartTrial'
+    | 'SubmitApplication'
+    | 'Subscribe'
+    | 'ViewContent';
 
 /**
  * The default pixel event properties.
@@ -87,8 +87,8 @@ export type PixelEventProperties = {
      *
      * See {@link https://developers.facebook.com/docs/marketing-api/currencies Meta Pixel docs - currency codes}.
      */
-    currency?: 'AED' | 'ARS' | 'AUD' | 'BDT' | 'BOB' | 'BRL' | 'CAD' | 'CHF' | 'CLP' | 'CNY' | 'COP' | 'CRC' | 'CZK' |
-        'DKK' | 'DZD' | 'EGP' | 'EUR' | 'GBP' | 'GTQ' | 'HKD' | 'HNL' | 'HUF' | 'IDR' | 'ILS' | 'INR' | 'ISK' | 'JPY' |
-        'KES' | 'KRW' | 'MOP' | 'MXN' | 'MYR' | 'NGN' | 'NIO' | 'NOK' | 'NZD' | 'PEN' | 'PHP' | 'PKR' | 'PLN' | 'PYG' |
-        'QAR' | 'RON' | 'RUB' | 'SAR' | 'SEK' | 'SGD' | 'THB' | 'TRY' | 'TWD' | 'USD' | 'UYU' | 'VEF' | 'VND' | 'ZAR'
+    currency?: 'AED' | 'ARS' | 'AUD' | 'BDT' | 'BOB' | 'BRL' | 'CAD' | 'CHF' | 'CLP' | 'CNY' | 'COP' | 'CRC' | 'CZK'
+        | 'DKK' | 'DZD' | 'EGP' | 'EUR' | 'GBP' | 'GTQ' | 'HKD' | 'HNL' | 'HUF' | 'IDR' | 'ILS' | 'INR' | 'ISK' | 'JPY'
+        | 'KES' | 'KRW' | 'MOP' | 'MXN' | 'MYR' | 'NGN' | 'NIO' | 'NOK' | 'NZD' | 'PEN' | 'PHP' | 'PKR' | 'PLN' | 'PYG'
+        | 'QAR' | 'RON' | 'RUB' | 'SAR' | 'SEK' | 'SGD' | 'THB' | 'TRY' | 'TWD' | 'USD' | 'UYU' | 'VEF' | 'VND' | 'ZAR'
 } & Record<string, unknown>;

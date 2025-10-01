@@ -1,0 +1,46 @@
+<div class="category-title">
+    <input 
+        type="checkbox"
+        [checked]="allEnabled"
+        [indeterminate]="someEnabled"
+        [disabled]="disabled"
+        [class.disabled]="disabled"
+        [aria-label]="title"
+        (change)="toggleEnableAll()"
+    >
+    <b tabindex="0"
+        role="button"
+        (keyup)="['Enter', ' '].includes($event.key) ? opened = !opened : undefined"
+        (click)="opened = !opened"
+    >
+        {{title}}
+        @if (!showOnlyCategories) {
+            <fa-icon [icon]="!opened ? faChevronDown : faChevronUp"></fa-icon>
+        }
+    </b>
+</div>
+@if (opened && !showOnlyCategories) {
+    <div class="tracking" [aria-expanded]="opened">
+        @for (tracking of trackingServices; track $index) {
+            <div class="tracking-title">
+                <label [for]="tracking.tracking.name">{{tracking.tracking.name}}</label>
+                <div class="slide-toggle"
+                    tabindex="0"
+                    role="switch"
+                    aria-disabled="true"
+                    [class.disabled]="disabled"
+                    [class.checked]="tracking.service.metadata.enabled"
+                    [aria-checked]="tracking.service.metadata.enabled"
+                    [id]="tracking.tracking.name"
+                    (click)="toggleTracking(tracking.service);"
+                    (keyup)="['Enter', ' '].includes($event.key) ? toggleTracking(tracking.service) : undefined"
+                >
+                    <div class="thumb"></div>
+                </div>
+            </div>
+            @for (paragraph of tracking.tracking.description; track $index) {
+                <p>{{paragraph}}</p>
+            }
+        }
+    </div>
+}

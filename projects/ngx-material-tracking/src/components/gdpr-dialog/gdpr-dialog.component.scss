@@ -1,9 +1,28 @@
-mat-panel-title {
-    mat-slide-toggle {
-        margin-left: auto;
-        padding-top: 10px;
-        padding-bottom: 10px;
-    }
+button {
+    display: block;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    padding: 12px;
+    font-weight: bold;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
+    background-color: whitesmoke;
+}
+
+button:hover {
+    background-color: rgb(230, 230, 230);
+}
+
+button,
+a {
+    transition: all 200ms;
+}
+
+.dialog-container {
+    background-color: whitesmoke;
+    border-radius: 5px;
+    max-height: calc(100vh - 30px);
+    overflow: scroll;
 }
 
 .dialog-title {
@@ -13,6 +32,7 @@ mat-panel-title {
     border-bottom: 1px solid gray;
 
     h1 {
+        margin-top: 0px;
         margin-bottom: 0px;
     }
 
@@ -30,7 +50,6 @@ mat-panel-title {
     .close-button:hover {
         cursor: pointer;
         color: red;
-        transition: color 0.5s ease;
     }
 }
 
@@ -40,24 +59,6 @@ mat-panel-title {
 
 .dialog-content {
     padding: 12px;
-
-    .category-title {
-        display: flex;
-        align-items: center;
-        height: 24px;
-        margin-bottom: 5px;
-        margin-top: 24px;
-        gap: 5px;
-
-        mat-checkbox {
-            margin-right: -5px;
-            margin-left: -12px;
-        }
-
-        b:hover {
-            cursor: pointer;
-        }
-    }
 }
 
 .dialog-actions {
@@ -73,10 +74,18 @@ mat-panel-title {
         background-color: green;
     }
 
+    .allow-all-button:hover {
+        background-color: rgb(0, 100, 0);
+    }
+
     .save-settings-button,
     .disallow-all-button {
         flex-basis: calc(25% - 8px);
         margin-left: 8px;
+    }
+
+    .disallow-all-button {
+        box-shadow: none;
     }
 
     .links {
@@ -85,6 +94,7 @@ mat-panel-title {
         width: 100%;
         gap: 12px;
         justify-content: center;
+        font-size: 14px;
 
         a {
             color: rgba(0, 0, 0, 0.6);
@@ -94,7 +104,6 @@ mat-panel-title {
         a:hover {
             cursor: pointer;
             color: initial;
-            transition: color 0.5s ease;
         }
     }
 }
