@@ -1,0 +1,47 @@
+name: CD
+
+on:
+    push:
+        branches:
+            - master
+    workflow_dispatch:
+
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  registry-url: https://registry.npmjs.org
+                  cache: npm
+
+            # trusted publishing (OIDC) requires npm >= 11.5.1
+            - run: npm install -g npm@latest
+
+            - name: check whether the version is already published
+              id: check
+              run: |
+                  VERSION=$(node -p "require('./projects/ngx-material-tracking/package.json').version")
+                  if npm view "ngx-material-tracking@$VERSION" version > /dev/null 2>&1; then
+                      echo "ngx-material-tracking@$VERSION is already published, skipping."
+                      echo "publish=false" >> "$GITHUB_OUTPUT"
+                  else
+                      echo "publishing ngx-material-tracking@$VERSION."
+                      echo "publish=true" >> "$GITHUB_OUTPUT"
+                  fi
+
+            - if: steps.check.outputs.publish == 'true'
+              run: npm ci
+
+            - if: steps.check.outputs.publish == 'true'
+              run: npm run build:prod
+
+            - if: steps.check.outputs.publish == 'true'
+              run: npm publish
+              working-directory: dist/ngx-material-tracking

@@ -1,7 +1,10 @@
 {
     "name": "ngx-material-tracking",
-    "version": "20.1.0",
+    "version": "20.1.1",
     "license": "MIT",
+    "repository": {
+        "url": "https://github.com/Service-Soft/ngx-material-tracking"
+    },
     "keywords": [
         "angular",
         "material",

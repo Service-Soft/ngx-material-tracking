@@ -69,7 +69,7 @@ a {
     border-top: 1px solid gray;
 
     .allow-all-button {
-        flex-basis: 50%;
+        flex-basis: 33.3%;
         color: white;
         background-color: green;
     }
@@ -80,12 +80,16 @@ a {
 
     .save-settings-button,
     .disallow-all-button {
-        flex-basis: calc(25% - 8px);
+        flex-basis: calc(33.3% - 8px);
         margin-left: 8px;
     }
 
     .disallow-all-button {
-        box-shadow: none;
+        background-color: red;
+        color: white;
+    }
+    .disallow-all-button:hover {
+        background-color: rgb(200, 0, 0);
     }
 
     .links {
@@ -109,26 +113,26 @@ a {
 }
 
 @media(max-width: 900px) {
-    .dialog-actions {
-        min-width: 0px;
+    // .dialog-actions {
+    //     min-width: 0px;
 
-        .allow-all-button {
-            flex-basis: 100%;
-            margin-bottom: 12px;
-        }
+    //     .allow-all-button {
+    //         flex-basis: 100%;
+    //         margin-bottom: 12px;
+    //     }
 
-        .save-settings-button {
-            margin-left: 0px;
-            flex-basis: 50%;
-        }
+    //     .save-settings-button {
+    //         margin-left: 0px;
+    //         flex-basis: 50%;
+    //     }
 
-        .disallow-all-button {
-            flex-basis: calc(50% - 8px);
-        }
-    }
+    //     .disallow-all-button {
+    //         flex-basis: calc(50% - 8px);
+    //     }
+    // }
 }
 
-@media(max-width: 575px) {
+@media(max-width: 750px) {
     .dialog-title {
         .close-button {
             display: none;
@@ -136,7 +140,7 @@ a {
     }
 
     .dialog-actions {
-
+        .allow-all-button,
         .save-settings-button {
             margin-bottom: 12px;
         }
