@@ -113,23 +113,23 @@ a {
 }
 
 @media(max-width: 900px) {
-    // .dialog-actions {
-    //     min-width: 0px;
+    .dialog-actions {
+        min-width: 0px;
 
-    //     .allow-all-button {
-    //         flex-basis: 100%;
-    //         margin-bottom: 12px;
-    //     }
+        .allow-all-button {
+            flex-basis: 100%;
+            margin-bottom: 12px;
+        }
 
-    //     .save-settings-button {
-    //         margin-left: 0px;
-    //         flex-basis: 50%;
-    //     }
+        .save-settings-button {
+            margin-left: 0px;
+            flex-basis: 50%;
+        }
 
-    //     .disallow-all-button {
-    //         flex-basis: calc(50% - 8px);
-    //     }
-    // }
+        .disallow-all-button {
+            flex-basis: calc(50% - 8px);
+        }
+    }
 }
 
 @media(max-width: 750px) {
